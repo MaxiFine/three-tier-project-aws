@@ -1,0 +1,29 @@
+##############################
+### SH APP tier (BASTION HOST)
+
+resource "aws_security_group" "ssh-security-group" {
+
+  name        = "SSH Access"
+  description = "Enable shh on port 22"
+  vpc_id      = aws_vpc.vpc_01.id
+
+
+  ingress {
+    description = "ssh-access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # it should be your ip addr
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "-1"
+  }
+
+  tags = {
+    Name = "ssh Security group"
+  }
+}

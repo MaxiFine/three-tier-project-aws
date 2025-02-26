@@ -1,0 +1,73 @@
+# Pub Sub 1
+resource "aws_subnet" "public-web-subnet-1" {
+  vpc_id                  = aws_vpc.vpc_01.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "eu-west-1a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "Public Subnet 1 | WEB TIER"
+  }
+
+}
+
+
+resource "aws_subnet" "public-web-subnet-2" {
+  vpc_id                  = aws_vpc.vpc_01.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "eu-west-1b"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "Public Subnet 2 | WEB TIER"
+  }
+
+}
+
+
+resource "aws_subnet" "private-app-subnet-1" {
+  vpc_id                  = aws_vpc.vpc_01.id
+  cidr_block              = "10.0.3.0/24"
+  availability_zone       = "eu-west-1a"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "Private Subnet 1 | APP TIER"
+  }
+
+}
+
+
+resource "aws_subnet" "private-app-subnet-2" {
+  vpc_id                  = aws_vpc.vpc_01.id
+  cidr_block              = "10.0.4.0/24"
+  availability_zone       = "eu-west-1b"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "Private Subnet 2 | APP TIER"
+  }
+
+}
+
+resource "aws_subnet" "private-db-subnet-1" {
+  vpc_id                  = aws_vpc.vpc_01.id
+  cidr_block              = "10.0.5.0/24"
+  availability_zone       = "eu-west-1a"
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "Private DB subnet 1 | DB TIER"
+  }
+}
+
+
+resource "aws_subnet" "private-db-subnet-2" {
+  vpc_id                  = aws_vpc.vpc_01.id
+  cidr_block              = "10.0.6.0/24"
+  availability_zone       = "eu-west-1b"
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "Private DB subnet 2 | DB TIER"
+  }
+}
+
