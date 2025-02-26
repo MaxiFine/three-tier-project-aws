@@ -14,7 +14,7 @@ resource "aws_lb" "web_external_lb" {
   enable_deletion_protection = false
 
   tags = {
-    Name = "ALB | Web Tier"
+    Name = "ALB Web Tier"
   }
 }
 
@@ -26,7 +26,7 @@ resource "aws_lb_target_group" "web_attaching_1" {
   vpc_id   = var.vpc_id
 
   tags = {
-    Name = "ABL attatch | web tier"
+    Name = "ABL attatch web tier"
   }
 }
 
@@ -73,7 +73,7 @@ resource "aws_lb" "app_internal_lb" {
   enable_deletion_protection = false
 
   tags = {
-    Name = "ALB-App-Tier"
+    Name = "ALBAppTier"
   }
 }
 
@@ -85,7 +85,7 @@ resource "aws_lb_target_group" "app_attaching_2" {
   vpc_id   = var.vpc_id
 
   tags = {
-    Name = "ABL attatch | App tier"
+    Name = "ABL attatch App tier"
   }
 }
 
