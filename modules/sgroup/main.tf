@@ -51,7 +51,7 @@ resource "aws_security_group" "exlb_security_group" {
   }
 
   tags = {
-    Name = "External Lbalancer Security Group | Pre Layer"
+    Name = "External Lbalancer Security Group Pre Layer"
   }
 
 
@@ -75,10 +75,13 @@ resource "aws_security_group" "web_security_group" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.public_instance_1_ip, var.public_instance_2_ip, "0.0.0.0/0"] # it should be your ip addr
-    security_groups = [ aws_security_group.exlb_security_group.id, 
-        var.public_instance_1_ip, 
-        var.public_instance_2_ip]
+    cidr_blocks = ["${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32"] # it should be your ip addr
+    # cidr_blocks = ["0.0.0.0/0"] # it should be your ip addr
+    security_groups = [ 
+        aws_security_group.exlb_security_group.id
+        # var.public_instance_1_ip, 
+        # var.public_instance_2_ip
+        ]
   }
 
   ingress {
@@ -86,7 +89,12 @@ resource "aws_security_group" "web_security_group" {
     from_port = 80
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = [ aws_security_group.exlb_security_group.id ]
+    cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32" , "0.0.0.0/0"]
+    security_groups = [
+        # var.private_instance_1_ip,
+        # var.private_instance_2_ip
+        aws_security_group.exlb_security_group.id
+    ]
   }
 
   ingress {
@@ -94,7 +102,8 @@ resource "aws_security_group" "web_security_group" {
     from_port = 443
     to_port = 443
     protocol = "tcp"
-    cidr_blocks = [ aws_security_group.exlb_security_group.id ]
+    cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32", "0.0.0.0/0" ]
+    security_groups = [ aws_security_group.exlb_security_group.id ]
   }
 
   egress {
@@ -122,31 +131,75 @@ resource "aws_security_group" "app_security_group" {
   vpc_id      = var.vpc_id
 
 
+  # ingress {
+  #   description = "HTTP ACCESS"
+  #   from_port   = 80
+  #   to_port     = 80
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  #   security_groups = [ aws_security_group.web_security_group.id ]
+  # }
+
+
+  # ingress {
+  #   description = "HTTPs ACCESS"
+  #   from_port   = 443
+  #   to_port     = 443
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
+
+  #   ingress {
+  #   description = "ssh-access"
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   cidr_blocks = [var.public_instance_1_ip, var.public_instance_2_ip] # it should be your ip addr
+  #   security_groups = [ aws_security_group.web_security_group.id]
+  # }
+
+  
   ingress {
-    description = "HTTP ACCESS"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    security_groups = [ aws_security_group.web_security_group.id ]
-  }
-
-
-  ingress {
-    description = "HTTPs ACCESS"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-    ingress {
     description = "ssh-access"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.public_instance_1_ip, var.public_instance_2_ip] # it should be your ip addr
-    security_groups = [ aws_security_group.exlb_security_group.id]
+    cidr_blocks = ["${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32"] # it should be your ip addr
+    # cidr_blocks = ["0.0.0.0/0"] # it should be your ip addr
+    security_groups = [ 
+        aws_security_group.web_security_group.id
+        # var.public_instance_1_ip, 
+        # var.public_instance_2_ip
+        ]
+  }
+
+  ingress {
+    description = "HTTP access"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32" , "0.0.0.0/0"]
+    security_groups = [
+        # var.private_instance_1_ip,
+        # var.private_instance_2_ip
+        aws_security_group.web_security_group.id
+    ]
+  }
+
+  ingress {
+    description = "HTTPS access"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32", "0.0.0.0/0" ]
+    security_groups = [ aws_security_group.web_security_group.id ]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "-1"
   }
 
   egress {
@@ -177,8 +230,9 @@ resource "aws_security_group" "database_security_group" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
+    # security_groups = [aws_security_group.app_security_group.id]
     security_groups = [aws_security_group.app_security_group.id]
-    cidr_blocks = [var.private_instance_1_ip, var.private_instance_2_ip]
+    cidr_blocks = []
   }
 
   tags = {
