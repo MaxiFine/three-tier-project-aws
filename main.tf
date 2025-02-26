@@ -71,6 +71,18 @@ module "sgroup" {
   private_instance_2_ip = module.ec2.private_id_2
 }
 
+# module "s3" {
+#   source = "./modules/s3"
+# }
+
+# module "rds" {
+#   source = "./modules/rds"
+  
+# }
+
+# module "route53" {
+#   source = "./modules/route53"
+# }
 
 
 
