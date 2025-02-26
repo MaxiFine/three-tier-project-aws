@@ -33,7 +33,7 @@ output "private_ip_1" {
 }
 output "private_ip_2" {
     description = "AWS instance id"
-    value = aws_instance.PrivateAppTemplat-1.public_ip
+    value = aws_instance.PrivateAppTemplat-1.public_dns
   
 }
 
