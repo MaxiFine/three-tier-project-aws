@@ -61,6 +61,19 @@ output "eip_id" {
   value = module.vpc.eip_id
 }
 
+output "web_sgroup" {
+  value = module.sgroup.web_layer_sg_id
+}
+
+
+output "app_sgroup" {
+  value = module.sgroup.app_layer_sg_id
+}
+
+output "db_sg" {
+    value = module.sgroup.db_layer_sg_id
+}
+
 ############
 ## CHAT REFS
 # output "vpc_id" {
