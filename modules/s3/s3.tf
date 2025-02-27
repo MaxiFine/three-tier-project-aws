@@ -1,10 +1,21 @@
-resource "aws_s3_bucket" "source_bucket" {
-  bucket = "my-source-bucket-example"
-  acl    = "private"
+#################
+## RANDOM ID's FOR BUCKET NAMES
 
-  versioning {
-    enabled = true
-  }
+resource "random_id" "source_bucket_suffix" {
+  byte_length = 4
+}
+
+resource "random_id" "destination_bucket_suffix" {
+  byte_length = 4
+}
+
+
+################################
+## S3 SOURCE AND DESTINATION BUCKET
+resource "aws_s3_bucket" "source_bucket" {
+  bucket        = "terra-source-bucket-${random_id.source_bucket_suffix.hex}"
+  # acl           = "private"
+  force_destroy = true
 
   tags = {
     Name        = "SourceBucket"
@@ -12,13 +23,18 @@ resource "aws_s3_bucket" "source_bucket" {
   }
 }
 
-resource "aws_s3_bucket" "destination_bucket" {
-  bucket = "my-destination-bucket-example"
-  acl    = "private"
+resource "aws_s3_bucket_versioning" "source_bucket_versioning" {
+  bucket = aws_s3_bucket.source_bucket.bucket
 
-  versioning {
-    enabled = true
+  versioning_configuration {
+    status = "Enabled"
   }
+}
+
+resource "aws_s3_bucket" "destination_bucket" {
+  bucket        = "terra-destination-bucket-${random_id.destination_bucket_suffix.hex}"
+  # acl           = "private"
+  force_destroy = true
 
   tags = {
     Name        = "DestinationBucket"
@@ -26,20 +42,27 @@ resource "aws_s3_bucket" "destination_bucket" {
   }
 }
 
+resource "aws_s3_bucket_versioning" "destination_bucket_versioning" {
+  bucket = aws_s3_bucket.destination_bucket.bucket
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
 
 
-#############################
-### IAM ROLEE TO ENABLE S3 TO REPLICATE THE BUCKET
-####################################################
+
+##########################
+# IAM CONFIGS FOR REPLICATIONS
 resource "aws_iam_role" "replication_role" {
   name = "s3-replication-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17",
     Statement = [
       {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
+        Action    = "sts:AssumeRole",
+        Effect    = "Allow",
         Principal = {
           Service = "s3.amazonaws.com"
         }
@@ -53,26 +76,26 @@ resource "aws_iam_policy" "replication_policy" {
   description = "Allows S3 to replicate objects"
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17",
     Statement = [
       {
-        Action = [
+        Action   = [
           "s3:GetObject",
           "s3:ListBucket",
           "s3:ReplicateObject",
           "s3:ReplicateDelete",
           "s3:ReplicateTags"
-        ]
-        Effect   = "Allow"
+        ],
+        Effect   = "Allow",
         Resource = [
-          "arn:aws:s3:::my-source-bucket-example/*",
-          "arn:aws:s3:::my-source-bucket-example"
+          "arn:aws:s3:::${aws_s3_bucket.source_bucket.bucket}/*",
+          "arn:aws:s3:::${aws_s3_bucket.source_bucket.bucket}"
         ]
       },
       {
-        Action = "s3:PutObject"
-        Effect = "Allow"
-        Resource = "arn:aws:s3:::my-destination-bucket-example/*"
+        Action   = "s3:PutObject",
+        Effect   = "Allow",
+        Resource = "arn:aws:s3:::${aws_s3_bucket.destination_bucket.bucket}/*"
       }
     ]
   })
@@ -85,12 +108,10 @@ resource "aws_iam_role_policy_attachment" "replication_role_attachment" {
 
 
 #####################
-## REPLICATION CONFIGS
-#######################
+# BUCKET REPLICATION CONIGS
 resource "aws_s3_bucket_replication_configuration" "replication_config" {
-  bucket = aws_s3_bucket.source_bucket.id
-
-  role = aws_iam_role.replication_role.arn
+  bucket = aws_s3_bucket.source_bucket.bucket
+  role   = aws_iam_role.replication_role.arn
 
   rule {
     id     = "ReplicationRule1"
