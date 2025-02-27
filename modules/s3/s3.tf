@@ -142,7 +142,7 @@ resource "aws_s3_bucket_replication_configuration" "replication_config" {
     }
 
     destination {
-      bucket        = aws_s3_bucket.destination_bucket.arn
+      bucket        = aws_s3_bucket.destination_bucket.id
       storage_class = "STANDARD"
     }
   }
