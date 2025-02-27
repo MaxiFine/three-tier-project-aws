@@ -119,7 +119,7 @@ resource "aws_security_group" "web_security_group" {
   }
 
   tags = {
-    Name = "app Security group"
+    Name = "Web Security group"
   }
 }
 
