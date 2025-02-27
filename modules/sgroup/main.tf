@@ -1,7 +1,7 @@
 ###################
 ## External ALB SG
 resource "aws_security_group" "exlb_security_group" {
-  name        = "External Load Balancer Server Security Group"
+  name        = "External LB Security Group"
   description = "Enable obia festus"
   vpc_id      = var.vpc_id
 
@@ -11,7 +11,7 @@ resource "aws_security_group" "exlb_security_group" {
       from_port        = 80
       to_port          = 80
       protocol         = "tcp"
-      security_groups  = []
+      # security_groups  = []
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
@@ -22,7 +22,7 @@ resource "aws_security_group" "exlb_security_group" {
       from_port        = 443
       to_port          = 443
       protocol         = "tcp"
-      security_groups  = []
+      # security_groups  = []
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
@@ -34,7 +34,7 @@ resource "aws_security_group" "exlb_security_group" {
       from_port        = 22
       to_port          = 22
       protocol         = "tcp"
-      security_groups  = []
+      # security_groups  = []
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
@@ -43,15 +43,16 @@ resource "aws_security_group" "exlb_security_group" {
   
 
   egress {
-    description = "ssh Connection"
+    description = "outbound Connection"
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
 
   tags = {
-    Name = "External Lbalancer Security Group Pre Layer"
+    Name = "External Lb Security Group Pre Layer"
   }
 
 
@@ -65,7 +66,7 @@ resource "aws_security_group" "exlb_security_group" {
 
 resource "aws_security_group" "web_security_group" {
 
-  name        = "App Layer SG Access"
+  name        = "Web Layer SG Access"
   description = "Enable shh on port 22"
   vpc_id      = var.vpc_id
 
@@ -75,13 +76,15 @@ resource "aws_security_group" "web_security_group" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32"] # it should be your ip addr
+    # cidr_blocks = ["${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32"] # it should be your ip addr
+    cidr_blocks = ["0.0.0.0/0"] # it should be your ip addr
     # cidr_blocks = ["0.0.0.0/0"] # it should be your ip addr
-    security_groups = [ 
-        aws_security_group.exlb_security_group.id
-        # var.public_instance_1_ip, 
-        # var.public_instance_2_ip
-        ]
+    # security_groups = [ 
+    #     aws_security_group.exlb_security_group.id, 
+    #     # aws_security_group.web_security_group.id
+    #     # var.public_instance_1_ip, 
+    #     # var.public_instance_2_ip
+    #     ]
   }
 
   ingress {
@@ -90,11 +93,11 @@ resource "aws_security_group" "web_security_group" {
     to_port = 80
     protocol = "tcp"
     cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32" , "0.0.0.0/0"]
-    security_groups = [
-        # var.private_instance_1_ip,
-        # var.private_instance_2_ip
-        aws_security_group.exlb_security_group.id
-    ]
+    # security_groups = [
+    #     # var.private_instance_1_ip,
+    #     # var.private_instance_2_ip
+    #     aws_security_group.exlb_security_group.id
+    # ]
   }
 
   ingress {
@@ -102,7 +105,8 @@ resource "aws_security_group" "web_security_group" {
     from_port = 443
     to_port = 443
     protocol = "tcp"
-    cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32", "0.0.0.0/0" ]
+    # cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32", "0.0.0.0/0" ]
+    cidr_blocks = [ "0.0.0.0/0" ]
     security_groups = [ aws_security_group.exlb_security_group.id ]
   }
 
@@ -130,41 +134,13 @@ resource "aws_security_group" "app_security_group" {
   description = "Enable http/https access on port 80/443"
   vpc_id      = var.vpc_id
 
-
-  # ingress {
-  #   description = "HTTP ACCESS"
-  #   from_port   = 80
-  #   to_port     = 80
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  #   security_groups = [ aws_security_group.web_security_group.id ]
-  # }
-
-
-  # ingress {
-  #   description = "HTTPs ACCESS"
-  #   from_port   = 443
-  #   to_port     = 443
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
-
-  #   ingress {
-  #   description = "ssh-access"
-  #   from_port   = 22
-  #   to_port     = 22
-  #   protocol    = "tcp"
-  #   cidr_blocks = [var.public_instance_1_ip, var.public_instance_2_ip] # it should be your ip addr
-  #   security_groups = [ aws_security_group.web_security_group.id]
-  # }
-
   
   ingress {
     description = "ssh-access"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32"] # it should be your ip addr
+    cidr_blocks = ["${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32", "0.0.0.0/0"] # it should be your ip addr
     # cidr_blocks = ["0.0.0.0/0"] # it should be your ip addr
     security_groups = [ 
         aws_security_group.web_security_group.id
@@ -202,16 +178,9 @@ resource "aws_security_group" "app_security_group" {
     protocol    = "-1"
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
 
   tags = {
-    Name = "APp Layer Security Group"
+    Name = "App Layer Security Group"
   }
 }
 
@@ -220,7 +189,7 @@ resource "aws_security_group" "app_security_group" {
 ## SG FOR DB TIER
 ######################
 resource "aws_security_group" "database_security_group" {
-  name        = "DB SERver Sec Group"
+  name        = "DB Server S"
   description = "Enable MYSQL access on port 3306"
   vpc_id      = var.vpc_id
 
@@ -232,7 +201,16 @@ resource "aws_security_group" "database_security_group" {
     protocol        = "tcp"
     # security_groups = [aws_security_group.app_security_group.id]
     security_groups = [aws_security_group.app_security_group.id]
-    cidr_blocks = []
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Postgres Access"
+    from_port = "5432"
+    to_port = "5432"
+    protocol = "tcp"
+    security_groups = [aws_security_group.app_security_group.id]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {

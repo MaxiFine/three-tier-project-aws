@@ -18,7 +18,9 @@
 # }
 
 
-
+###################
+## VPC NETWORKING COMPONENTS CONFIGS
+###############################
 output "vpc_id" {
   #   value = aws_vpc.vpc_01.id  # correct refs
   value = module.vpc.vpc_id
@@ -71,7 +73,7 @@ output "app_sgroup" {
 }
 
 output "db_sg" {
-    value = module.sgroup.db_layer_sg_id
+  value = module.sgroup.db_layer_sg_id
 }
 
 ############

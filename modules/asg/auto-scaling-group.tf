@@ -117,6 +117,7 @@ resource "aws_autoscaling_group" "asg-2" {
     var.private_subnet_1_cidr,
     var.private_subnet_2_cidr
   ]
+  
   desired_capacity   = 1
   max_size           = 2
   min_size           = 1
