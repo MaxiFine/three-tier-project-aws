@@ -62,7 +62,7 @@ resource "aws_db_subnet_group" "rds_subnets" {
   }
 }
 
-resource "aws_db_instance" "default" {
+resource "aws_db_instance" "terra_rds_intance" {
   allocated_storage = 10
   storage_type      = "gp2"
   engine            = "postgres"
