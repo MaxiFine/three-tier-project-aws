@@ -84,10 +84,10 @@ module "s3" {
 }
 
 module "rds" {
-  source = "./modules/rds"
+  source       = "./modules/rds"
   db_sec_group = module.sgroup.db_layer_sg_id
-  db_subnet_1 = module.vpc.db_sub_1
-  db_subnet_2 = module.vpc.db_sub_2
+  db_subnet_1  = module.vpc.db_sub_1
+  db_subnet_2  = module.vpc.db_sub_2
 
 }
 
