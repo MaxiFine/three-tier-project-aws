@@ -71,7 +71,7 @@ output "app_sgroup" {
 }
 
 output "db_sg" {
-    value = module.sgroup.db_layer_sg_id
+  value = module.sgroup.db_layer_sg_id
 }
 
 ############
