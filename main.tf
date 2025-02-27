@@ -43,12 +43,12 @@ module "alb" {
 
 
 module "sgroup" {
-  source                = "./modules/sgroup"
-  vpc_id                = module.vpc.vpc_id
-  public_instance_1_ip  = module.ec2.public_ip_1
-  public_instance_2_ip  = module.ec2.public_ip_2
-  private_instance_1_ip = module.ec2.private_ip_1
-  private_instance_2_ip = module.ec2.private_id_2
+  source = "./modules/sgroup"
+  vpc_id = module.vpc.vpc_id
+  # public_instance_1_ip  = module.ec2.public_ip_1
+  # public_instance_2_ip  = module.ec2.public_ip_2
+  # private_instance_1_ip = module.ec2.private_ip_1
+  # private_instance_2_ip = module.ec2.private_id_2
 }
 
 
@@ -61,7 +61,7 @@ module "ec2" {
   public_web_subnet_2  = module.vpc.public_sub_2 # Us
   private_app_subnet_1 = module.vpc.private_sub_1
   private_app_subnet_2 = module.vpc.private_sub_2
-  
+
 
 
 }
@@ -83,13 +83,13 @@ module "s3" {
   source = "./modules/s3"
 }
 
-# module "rds" {
-#   source = "./modules/rds"
-#   db_sec_group = module.sgroup.db_layer_sg_arn
-#   db_subnet_1 = module.vpc.db_sub_1
-#   db_subnet_2 = module.vpc.db_sub_2
+module "rds" {
+  source       = "./modules/rds"
+  db_sec_group = module.sgroup.db_layer_sg_id
+  db_subnet_1  = module.vpc.db_sub_1
+  db_subnet_2  = module.vpc.db_sub_2
 
-# }
+}
 
 # module "route53" {
 #   source = "./modules/route53"
