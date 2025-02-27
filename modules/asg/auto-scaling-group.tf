@@ -6,7 +6,7 @@
 
 resource "aws_launch_template" "public-auto-scaling-group" {
   # name = "external-asg"
-  name   = "pulic-auto-scaling-group"
+  name          = "pulic-auto-scaling-group"
   image_id      = "ami-03fd334507439f4d1"
   instance_type = "t2.micro"
   # user_data     = base64encode(file("${path.module}/user_data.sh"))
@@ -15,14 +15,14 @@ resource "aws_launch_template" "public-auto-scaling-group" {
   user_data = base64encode(templatefile("${path.root}/user_data.sh", {}))
 
 
-  key_name      = "vagrant-key"
+  key_name = "vagrant-key"
 
   # network_interfaces {
   #   subnet_id       = aws_subnet.public-web-subnet-1.id
   #   security_groups = [aws_security_group.webserver-security-group.id]
   # }
 
-  
+
 
 }
 
@@ -52,9 +52,9 @@ resource "aws_autoscaling_group" "asg-1" {
     var.public_subnet_1_cidr,
     var.public_subnet_2_cidr
   ]
-  desired_capacity   = 1
-  max_size           = 2
-  min_size           = 1
+  desired_capacity = 1
+  max_size         = 2
+  min_size         = 1
 
   launch_template {
     id      = aws_launch_template.auto-scaling-group-private.id
@@ -117,10 +117,10 @@ resource "aws_autoscaling_group" "asg-2" {
     var.private_subnet_1_cidr,
     var.private_subnet_2_cidr
   ]
-  
-  desired_capacity   = 1
-  max_size           = 2
-  min_size           = 1
+
+  desired_capacity = 1
+  max_size         = 2
+  min_size         = 1
 
   launch_template {
     id      = aws_launch_template.auto-scaling-group-private.id

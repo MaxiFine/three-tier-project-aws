@@ -1,6 +1,6 @@
 output "vpc_id" {
-    value = aws_vpc.vpc_01.id
-  
+  value = aws_vpc.vpc_01.id
+
 }
 
 output "public_sub_1" {

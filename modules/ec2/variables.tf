@@ -25,15 +25,15 @@ variable "private_app_subnet_2" {
 
 variable "web_security_group" {
   description = "SG for App Tier"
-  type = string
+  type        = string
 }
 variable "app_security_group" {
   description = "SG for App Tier"
-  type = string
+  type        = string
 }
 
 
 variable "vpc_id" {
   description = "SG for App Tier"
-  type = string
+  type        = string
 }
