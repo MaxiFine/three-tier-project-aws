@@ -62,25 +62,85 @@ resource "aws_db_subnet_group" "rds_subnets" {
   }
 }
 
+
+#######################
+## IAM for rds monitoring
+resource "aws_iam_role" "rds_monitoring_role" {
+  name = "rds-monitoring-role"
+
+  assume_role_policy = jsonencode({
+  Version = "2012-10-17",
+  Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+        Service = "monitoring.rds.amazonaws.com"
+      }
+    }
+  ]
+})
+}
+
+
+################
+## IAM Attatchment to Policy
+resource "aws_iam_policy_attachment" "rds_monitoring_attachment" {
+  name = "rds-monitoring-attachment"
+  roles = [aws_iam_role.rds_monitoring_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
+
+#################
+## PARAMETER GROUP
+resource "aws_db_parameter_group" "my_db_pmg" {
+  name   = "my-db-pg"
+  family = "postgres12"  # Changed from mysql5.7 to postgres12
+
+  # Example parameter: adjust max_connections
+  parameter {
+    # name  = "max_connections"
+    # value = "100"
+    name = "connection_timeout"
+    value = "15"
+  }
+}
+
+
+
 resource "aws_db_instance" "terra_rds_intance" {
-  allocated_storage = 10
+  allocated_storage = 20
   storage_type      = "gp2"
   engine            = "postgres"
   engine_version    = "12.19"
   instance_class    = "db.t3.micro"
   identifier        = "mydb"
-  username          = "mx-terra-db"
+  username          = "mxterradb"
   password          = "maxwell22"
 
   vpc_security_group_ids = [var.db_sec_group]
   db_subnet_group_name   = aws_db_subnet_group.rds_subnets.name
 
-  # backup_retention_period = 7
-  # backup_window = "03:00-04:00"
-  # # backup_target = 
-  # maintenance_window = "mon:04:00-mon:04:30"
+  # automating backup configs
+  backup_retention_period = 7
+  backup_window = "03:00-04:00"
+  # backup_target = 
+  maintenance_window = "mon:04:00-mon:04:30"
 
   # # Enabling automated back
-  skip_final_snapshot = true
-  # final_snapshot_identifier = "db-snap"
+  skip_final_snapshot = false
+  # snapshot_identifier = 
+  final_snapshot_identifier = "db-snap"
+
+  # Enabling Monitoring
+  monitoring_interval = 60
+  monitoring_role_arn = aws_iam_role.rds_monitoring_role.arn
+
+  # Performance insight
+  performance_insights_enabled = true
+
+  # parameter group
+  parameter_group_name = aws_db_parameter_group.my_db_pmg.name
 }
+
