@@ -1,4 +1,16 @@
 #################
+# PRIVIDERS FOR S3 BUCKETS
+provider "aws" {
+  region = "eu-west-1"
+}
+
+provider "aws" {
+  alias  = "destination"
+  region = "eu-central-1"
+}
+
+
+#################
 ## RANDOM ID's FOR BUCKET NAMES
 
 resource "random_id" "source_bucket_suffix" {
@@ -13,6 +25,7 @@ resource "random_id" "destination_bucket_suffix" {
 ################################
 ## S3 SOURCE AND DESTINATION BUCKET
 resource "aws_s3_bucket" "source_bucket" {
+  provider = aws
   bucket        = "terra-source-bucket-${random_id.source_bucket_suffix.hex}"
   # acl           = "private"
   force_destroy = true
@@ -25,6 +38,7 @@ resource "aws_s3_bucket" "source_bucket" {
 
 resource "aws_s3_bucket_versioning" "source_bucket_versioning" {
   bucket = aws_s3_bucket.source_bucket.bucket
+  provider = aws
 
   versioning_configuration {
     status = "Enabled"
@@ -32,6 +46,7 @@ resource "aws_s3_bucket_versioning" "source_bucket_versioning" {
 }
 
 resource "aws_s3_bucket" "destination_bucket" {
+  provider = aws.destination
   bucket        = "terra-destination-bucket-${random_id.destination_bucket_suffix.hex}"
   # acl           = "private"
   force_destroy = true
@@ -43,6 +58,7 @@ resource "aws_s3_bucket" "destination_bucket" {
 }
 
 resource "aws_s3_bucket_versioning" "destination_bucket_versioning" {
+  provider = aws.destination
   bucket = aws_s3_bucket.destination_bucket.bucket
 
   versioning_configuration {
@@ -131,3 +147,51 @@ resource "aws_s3_bucket_replication_configuration" "replication_config" {
     }
   }
 }
+
+
+# #########################
+# ## TESTING REPLICATION OBJECTS
+
+
+
+# ###################
+# # S3 CONFIGS
+# resource "aws_s3_bucket" "source_bucket" {
+#   provider      = aws
+#   bucket        = "source-bucket-${random_id.source_bucket_suffix.hex}"
+#   force_destroy = true
+
+#   tags = {
+#     Name        = "SourceBucket"
+#     Environment = "Production"
+#   }
+# }
+
+# resource "aws_s3_bucket_versioning" "source_bucket_versioning" {
+#   provider = aws
+#   bucket   = aws_s3_bucket.source_bucket.bucket
+
+#   versioning_configuration {
+#     status = "Enabled"
+#   }
+# }
+
+# resource "aws_s3_bucket" "destination_bucket" {
+#   provider      = aws.destination
+#   bucket        = "destination-bucket-${random_id.destination_bucket_suffix.hex}"
+#   force_destroy = true
+
+#   tags = {
+#     Name        = "DestinationBucket"
+#     Environment = "Production"
+#   }
+# }
+
+# resource "aws_s3_bucket_versioning" "destination_bucket_versioning" {
+#   provider = aws.destination
+#   bucket   = aws_s3_bucket.destination_bucket.bucket
+
+#   versioning_configuration {
+#     status = "Enabled"
+#   }
+# }
