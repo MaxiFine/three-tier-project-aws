@@ -1,11 +1,11 @@
 variable "db_subnet_1" {
-  type = string
+  type        = string
   description = "DB Dec Group 1"
 }
 
 
 variable "db_subnet_2" {
-  type = string
+  type        = string
   description = "DB Dec Group 2"
 }
 
