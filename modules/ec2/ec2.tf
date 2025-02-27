@@ -26,7 +26,8 @@ resource "aws_instance" "PublicWebTemplate-2" {
   ami           = "ami-03fd334507439f4d1" # Replace with your AMI ID
   instance_type = "t2.micro"
   # subnet_id     = aws_subnet.public-web-subnet-2.id
-  subnet_id = var.public_web_subnet_2
+  # subnet_id = var.public_web_subnet_2
+  subnet_id = var.private_app_subnet_2
   # security_groups = [ var.web_security_group ]
   vpc_security_group_ids = [ var.web_security_group ]
 
