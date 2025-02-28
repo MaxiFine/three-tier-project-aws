@@ -12,7 +12,8 @@ resource "aws_launch_template" "public-auto-scaling-group" {
   # user_data     = base64encode(file("${path.module}/user_data.sh"))
   #  user_data = base64encode(data.templatefile.user_data.rendered)
   # user_data     = base64encode(file("c/Users/MaxwellAdomako/Desktop/projs/user_data.sh"))
-  user_data = base64encode(templatefile("${path.root}/user_data.sh", {}))
+  # user_data = base64encode(templatefile("${path.root}/user_data.sh", {}))
+  security_group_names = [var.asg_web_sg]
 
 
   key_name = "vagrant-key"
@@ -55,6 +56,7 @@ resource "aws_autoscaling_group" "asg-1" {
   desired_capacity = 1
   max_size         = 2
   min_size         = 1
+  
 
   launch_template {
     id      = aws_launch_template.auto-scaling-group-private.id
@@ -103,7 +105,13 @@ resource "aws_launch_template" "auto-scaling-group-private" {
   # user_data = base64encode(data.templatefile.user_data.rendered)
   # user_data     = base64encode(file("${c/Users/MaxwellAdomako/Desktop/projs}/user_data.sh", {}))
   # user_data = base64encode(file("c:/Users/MaxwellAdomako/Desktop/projs/user_data.sh"))
-  user_data = base64encode(templatefile("${path.root}/user_data.sh", {}))
+  # user_data = base64encode(templatefile("${path.root}/user_data.sh", {}))
+  security_group_names = [ var.asg_app_sg ]
+  user_data =  <<-EOF
+              #!/bin/bash
+              echo "Hello, World 1" > index.html
+              python3 -m http.server 8080 &
+              EOF
 
 
 
