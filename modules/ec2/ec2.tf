@@ -17,11 +17,12 @@ resource "aws_instance" "PublicWebTemplat-1" {
   # user_data = base64encode(templatefile("${path.root}/user_data.sh", {}))
   # vpc_security_group_ids = [var.web_security_group]
   # vpc_security_group_ids = []
-   user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello, World 1" > index.html
-              python3 -m http.server 8080 &
-              EOF
+  #  user_data = <<-EOF
+  #             #!/bin/bash
+  #             echo "Hello, World 1" > index.html
+  #             python3 -m http.server 8080 &
+  #             EOF
+  user_data = file("${path.root}/user_data.sh")
   security_groups = [var.web_security_group]
 
 
@@ -74,11 +75,12 @@ resource "aws_instance" "PrivateAppTemplat-1" {
   # user_data = base64encode(data.index_file.user_data.rendered)
   # user_data     = base64encode(templatefile("${path.module}/user_data.sh", {}))
   # user_data = base64encode(templatefile("${path.root}/user_data.sh", {}))
-  user_data =  <<-EOF
-              #!/bin/bash
-              echo "Hello, World 1" > index.html
-              python3 -m http.server 8080 &
-              EOF
+  # user_data =  <<-EOF
+  #             #!/bin/bash
+  #             echo "Hello, World 1" > index.html
+  #             python3 -m http.server 8080 &
+  #             EOF
+  user_data = file("${path.root}/user_data.sh")
 
 
   tags = {

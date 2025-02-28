@@ -3,6 +3,11 @@ output "vpc_id" {
 
 }
 
+output "vpc_cidr" {
+  value = aws_vpc.vpc_01.cidr_block
+  
+}
+
 output "public_sub_1" {
   # value = aws_subnet.public_web_subnet-1.id
   value = aws_subnet.public-web-subnet-1.id

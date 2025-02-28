@@ -1,18 +1,32 @@
-output "external_asg_id" {
-  value = aws_autoscaling_group.asg-1.id
+output "web_asg_id" {
+  value = aws_autoscaling_group.web_asg.id
 }
-output "external_asg_name" {
-  value = aws_autoscaling_group.asg-1.name
+output "web_asg_arn" {
+  value = aws_autoscaling_group.web_asg.arn
 }
-output "external_asg_ax" {
-  value = aws_autoscaling_group.asg-1.availability_zones
+output "app_asg_arn" {
+  value = aws_autoscaling_group.app_asg.arn
 }
-output "internal_asg_id" {
-  value = aws_autoscaling_group.asg-2.id
+output "app_asg_id" {
+  value = aws_autoscaling_group.app_asg.id
 }
-output "internal_asg_name" {
-  value = aws_autoscaling_group.asg-2.name_prefix
+
+
+
+output "web_increase_policy_arn" {
+  value = aws_autoscaling_policy.web_increase_ec2_policy.arn
 }
-output "internal_asg_az" {
-  value = aws_autoscaling_group.asg-2.availability_zones
+output "web_decrease_policy_arn" {
+  value = aws_autoscaling_policy.web_reduce_ec2_policy.arn
 }
+output "app_increase_policy_arn" {
+  value = aws_autoscaling_policy.app_increase_ec2_policy.arn
+}
+output "app_reduce_policy_arn" {
+  value = aws_autoscaling_policy.app_reduce_ec2_policy.arn
+}
+
+
+# output "kep_pair" {
+#   value = aws_key_pair.
+# }
