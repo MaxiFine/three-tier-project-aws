@@ -108,6 +108,26 @@ output "s3_dest_bucket_id" {
   value = module.s3.s3_dest_bucket_id
 }
 
+output "sns_arn" {
+  value = module.sns.sns_arn
+}
+output "sns_id" {
+  value = module.sns.sns_id
+}
+
+
+output "app_cwatch_increase_policy" {
+  value = module.cwatch.app_increase_ec2_policy_id
+}
+output "app_cwatch_decrease_policy" {
+  value = module.cwatch.app_decrease_ec2_policy_arn
+}
+output "web_cwatch_increase_policy" {
+  value = module.cwatch.web_increase_ec2_policy_arn
+}
+output "web_cwatch_decrease_policy" {
+  value = module.cwatch.web_decrease_ec2_policy_id
+}
 ############
 ## CHAT REFS
 # output "vpc_id" {
