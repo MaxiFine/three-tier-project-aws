@@ -35,9 +35,9 @@ module "alb" {
   web_sgroup         = module.sgroup.web_layer_sg_id
   app_sgroup         = module.sgroup.app_layer_sg_id
   public_instance_1  = module.ec2.public_id_1
-  public_instance_2  = module.ec2.public_id_2
+  # public_instance_2  = module.ec2.public_id_2
   private_instance_1 = module.ec2.private_id_1
-  private_instance_2 = module.ec2.private_id_2
+  # private_instance_2 = module.ec2.private_id_2
 
 }
 
@@ -72,6 +72,9 @@ module "asg" {
   public_subnet_2_cidr  = module.vpc.public_sub_2 # Us
   asg_app_sg            = module.sgroup.app_layer_sg_id
   asg_web_sg            = module.sgroup.web_layer_sg_id
+  # alb attachment to asg
+  web_alb_arn = module.alb.external_alb_target_arn
+  app_alb_arn = module.alb.internal_alb_arn
 }
 
 
@@ -79,13 +82,13 @@ module "s3" {
   source = "./modules/s3"
 }
 
-# module "rds" {
-#   source = "./modules/rds"
-#   db_sec_group = module.sgroup.db_layer_sg_arn
-#   db_subnet_1 = module.vpc.db_sub_1
-#   db_subnet_2 = module.vpc.db_sub_2
+module "rds" {
+  source = "./modules/rds"
+  db_sec_group = module.sgroup.db_layer_sg_arn
+  db_subnet_1 = module.vpc.db_sub_1
+  db_subnet_2 = module.vpc.db_sub_2
 
-# }
+}
 
 # module "route53" {
 #   source = "./modules/route53"
