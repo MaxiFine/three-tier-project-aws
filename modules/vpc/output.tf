@@ -30,6 +30,6 @@ output "igw" {
 output "nat_1_id" {
   value = aws_nat_gateway.nat_1.id
 }
-output "eip_id" {
+output "eipid" {
   value = aws_eip.eip_nat.id
 }
