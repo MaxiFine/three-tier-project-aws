@@ -29,7 +29,7 @@ resource "aws_lb_target_group" "web_attaching_1" {
   health_check {
     path = "/"
     protocol = "HTTP"
-    port = "trafic-port"
+    port = "traffic-port"
     healthy_threshold = 2
     unhealthy_threshold = 2
     timeout = 4
@@ -70,7 +70,7 @@ resource "aws_lb_target_group" "app_lb_attaching" {
   health_check {
     path = "/"
     protocol = "HTTP"
-    port = "trafic-port"
+    port = "traffic-port"
     healthy_threshold = 2
     unhealthy_threshold = 2
     timeout = 4
