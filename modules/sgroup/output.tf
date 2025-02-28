@@ -1,10 +1,10 @@
 output "external_alb_layer_sg_id" {
-  value = aws_security_group.exlb_security_group.id
+  value = aws_security_group.web_security_group.id
 }
 
 
 output "external_alb_layer_sg_arn" {
-  value = aws_security_group.exlb_security_group.arn
+  value = aws_security_group.web_security_group.arn
 }
 
 
