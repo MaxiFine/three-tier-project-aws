@@ -33,19 +33,19 @@ variable "app_sgroup" {
 }
 
 
-variable "public_instance_1" {
-  description = "Public instance 1 id"
-  type        = string
-}
-# variable "public_instance_2" {
-#   description = " Public Instance 2 id"
+# variable "public_instance_1" {
+#   description = "Public instance 1 id"
+#   type        = string
 # }
+# # variable "public_instance_2" {
+# #   description = " Public Instance 2 id"
+# # }
 
 
-variable "private_instance_1" {
-  description = "Private instance 1 id"
-  type        = string
-}
+# variable "private_instance_1" {
+#   description = "Private instance 1 id"
+#   type        = string
+# }
 # variable "private_instance_2" {
 #   description = " Private Instance 2 id"
 # }
