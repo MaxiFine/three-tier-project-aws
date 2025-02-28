@@ -4,6 +4,11 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "vpc_cidr" {
+  description = "VPC CIDR bloc"
+  type = string
+}
+
 
 # variable "public_instance_1_ip" {
 #     type = string
