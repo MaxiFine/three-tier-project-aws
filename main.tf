@@ -23,7 +23,7 @@ module "vpc" {
 
 }
 
-
+#### ALB  ########
 module "alb" {
   source               = "./modules/alb"
   vpc_id               = module.vpc.vpc_id
@@ -34,9 +34,9 @@ module "alb" {
   # web_sgroup = module.security_groups.external_alb_layer_sg_id
   web_sgroup         = module.sgroup.web_layer_sg_id
   app_sgroup         = module.sgroup.app_layer_sg_id
-  public_instance_1  = module.ec2.public_id_1
+  # public_instance_1  = module.ec2.public_id_1
   # public_instance_2  = module.ec2.public_id_2
-  private_instance_1 = module.ec2.private_id_1
+  # private_instance_1 = module.ec2.private_id_1
   # private_instance_2 = module.ec2.private_id_2
 
 }
@@ -80,6 +80,7 @@ module "asg" {
 
 module "s3" {
   source = "./modules/s3"
+  
 }
 
 module "rds" {
