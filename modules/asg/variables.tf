@@ -81,19 +81,26 @@ variable "asg_app_sg" {
   type        = string
 }
 
-# variable "web_alb_id" {
-#   type = string
-#   description = "Web Alb id"
-# }
 variable "web_alb_arn" {
   type = string
-  description = "Web ALb arn"
+  description = "Web Alb id"
 }
+# variable "web_asg_arn" {
+#   type        = string
+#   description = "Web ALb arn"
+# }
+
+# variable "app_asg_arn" {
+#   type        = string
+#   description = "APP alb id"
+# }
 variable "app_alb_arn" {
   type = string
-  description = "APP alb id"
+  description = "APP alb arn"
 }
-# variable "app_alb_id" {
-#   type = string
-#   description = "APP alb arn"
-# }
+
+variable "key_name" {
+  type = string
+  description = "Key pair name"
+}
+
