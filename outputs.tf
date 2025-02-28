@@ -59,9 +59,9 @@ output "nat-gateway" {
 
 }
 
-output "eip_id" {
-  value = module.vpc.eip_id
-}
+# output "eip_id" {
+#   value = module.vpc.eip_id
+# }
 
 output "web_sgroup" {
   value = module.sgroup.web_layer_sg_id
@@ -74,6 +74,38 @@ output "app_sgroup" {
 
 output "db_sg" {
   value = module.sgroup.db_layer_sg_id
+}
+
+output "eip_id_" {
+  value = module.vpc.eipid
+}
+
+output "nat-gateway_id" {
+  value = module.vpc.nat_1_id
+}
+
+output "rds_arn" {
+  value = module.rds.rds_instance_arn
+}
+
+output "name" {
+  value = module.rds.rds_instance_id
+}
+
+
+output "s3_source_bucket_arn" {
+  value = module.s3.s3_source_bucket_arn
+}
+
+output "s3_source_bucket_id" {
+  value = module.s3.s3_source_bucket_id
+}
+
+output "s3_dest_bucket_arn" {
+  value = module.s3.s3_dest_bucket_arn
+}
+output "s3_dest_bucket_id" {
+  value = module.s3.s3_dest_bucket_id
 }
 
 ############

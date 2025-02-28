@@ -1,62 +1,62 @@
-###################
-## External ALB SG
-resource "aws_security_group" "exlb_security_group" {
-  name        = "External LB Security Group"
-  description = "Enable obia festus"
-  vpc_id      = var.vpc_id
+# ###################
+# ## External ALB SG
+# resource "aws_security_group" "exlb_security_group" {
+#   name        = "External LB Security Group"
+#   description = "Enable obia festus"
+#   vpc_id      = var.vpc_id
 
 
-  ingress {
-    description = "HTTP ACCESS"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    # security_groups  = []
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = []
-    prefix_list_ids  = []
-    self             = false
-  }
-  ingress {
-    description = "HTTPS ACCESS"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    # security_groups  = []
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = []
-    prefix_list_ids  = []
-    self             = false
-  }
+#   ingress {
+#     description = "HTTP ACCESS"
+#     from_port   = 80
+#     to_port     = 80
+#     protocol    = "tcp"
+#     # security_groups  = []
+#     cidr_blocks      = ["0.0.0.0/0"]
+#     ipv6_cidr_blocks = []
+#     prefix_list_ids  = []
+#     self             = false
+#   }
+#   ingress {
+#     description = "HTTPS ACCESS"
+#     from_port   = 443
+#     to_port     = 443
+#     protocol    = "tcp"
+#     # security_groups  = []
+#     cidr_blocks      = ["0.0.0.0/0"]
+#     ipv6_cidr_blocks = []
+#     prefix_list_ids  = []
+#     self             = false
+#   }
 
-  ingress {
-    description = "SSH ACCESS"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    # security_groups  = []
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = []
-    prefix_list_ids  = []
-    self             = false
-  }
-
-
-  egress {
-    description = "outbound Connection"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   ingress {
+#     description = "SSH ACCESS"
+#     from_port   = 22
+#     to_port     = 22
+#     protocol    = "tcp"
+#     # security_groups  = []
+#     cidr_blocks      = ["0.0.0.0/0"]
+#     ipv6_cidr_blocks = []
+#     prefix_list_ids  = []
+#     self             = false
+#   }
 
 
-  tags = {
-    Name = "External Lb Security Group Pre Layer"
-  }
+#   egress {
+#     description = "outbound Connection"
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
 
-}
+#   tags = {
+#     Name = "External Lb Security Group Pre Layer"
+#   }
+
+
+# }
 
 
 ################################
@@ -108,7 +108,7 @@ resource "aws_security_group" "web_security_group" {
     protocol    = "tcp"
     # cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32", "0.0.0.0/0" ]
     cidr_blocks     = ["0.0.0.0/0"]
-    security_groups = [aws_security_group.exlb_security_group.id]
+  
   }
 
   egress {
@@ -119,7 +119,7 @@ resource "aws_security_group" "web_security_group" {
   }
 
   tags = {
-    Name = "Web Security group"
+    Name = "PublicWeb Security group"
   }
 }
 
@@ -156,11 +156,11 @@ resource "aws_security_group" "app_security_group" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    security_groups = [
-      # var.private_instance_1_ip,
-      # var.private_instance_2_ip
-      aws_security_group.web_security_group.id
-    ]
+    # security_groups = [
+    #   # var.private_instance_1_ip,
+    #   # var.private_instance_2_ip
+    #   aws_security_group.web_security_group.id
+    # ]
   }
 
   ingress {
@@ -169,7 +169,7 @@ resource "aws_security_group" "app_security_group" {
     to_port         = 443
     protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
-    security_groups = [aws_security_group.web_security_group.id]
+    # security_groups = [aws_security_group.web_security_group.id]
   }
 
   egress {
@@ -181,7 +181,7 @@ resource "aws_security_group" "app_security_group" {
 
 
   tags = {
-    Name = "App Layer Security Group"
+    Name = "PrivateApp Layer Security Group"
   }
 }
 
@@ -201,16 +201,16 @@ resource "aws_security_group" "database_security_group" {
     to_port     = 3306
     protocol    = "tcp"
     # security_groups = [aws_security_group.app_security_group.id]
-    security_groups = [aws_security_group.app_security_group.id]
+    # security_groups = [aws_security_group.app_security_group.id]
     cidr_blocks     = ["0.0.0.0/0"]
   }
 
   ingress {
     description     = "Postgres Access"
-    from_port       = "5432"
-    to_port         = "5432"
+    from_port       = 5432
+    to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.app_security_group.id]
+    # security_groups = [aws_security_group.app_security_group.id]
     cidr_blocks     = ["0.0.0.0/0"]
   }
 

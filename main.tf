@@ -43,12 +43,8 @@ module "alb" {
 
 
 module "sgroup" {
-  source                = "./modules/sgroup"
-  vpc_id                = module.vpc.vpc_id
-  # public_instance_1_ip  = module.ec2.public_ip_1
-  # public_instance_2_ip  = module.ec2.public_ip_2
-  # private_instance_1_ip = module.ec2.private_ip_1
-  # private_instance_2_ip = module.ec2.private_id_2
+  source = "./modules/sgroup"
+  vpc_id = module.vpc.vpc_id
 }
 
 

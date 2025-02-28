@@ -42,18 +42,37 @@ resource "aws_iam_policy_attachment" "rds_monitoring_attachment" {
 
 #################
 ## PARAMETER GROUP   ///////////soome error here
+# resource "aws_db_parameter_group" "my_db_pmg" {
+#   name   = "my-db-pg"
+#   family = "postgres12" # Changed from mysql5.7 to postgres12
+
+#   # Example parameter: adjust max_connections
+#   parameter {
+#     name  = "max_connections"
+#     value = "100"
+#   }
+# }
+
 resource "aws_db_parameter_group" "my_db_pmg" {
   name   = "my-db-pg"
-  family = "postgres12" # Changed from mysql5.7 to postgres12
+  family = "postgres12"  # PostgreSQL 12
 
-  # Example parameter: adjust max_connections
   parameter {
-    # name  = "max_connections"
-    # value = "100"
-    name  = "connection_timeout"
-    value = "15"
+    name  = "max_connections"
+    value = "100"
+  }
+
+  parameter {
+    name  = "statement_timeout"  # Instead of connection_timeout
+    value = "15000"  # Value in milliseconds (15 seconds)
+  }
+
+  parameter {
+    name  = "work_mem"
+    value = "4096"
   }
 }
+
 
 ###################
 ## ENCRYPTION[DATA ACCESS AND SECURITY]

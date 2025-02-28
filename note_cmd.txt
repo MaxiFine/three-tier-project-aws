@@ -1,0 +1,2 @@
+terraform state rm module.rds.aws_db_parameter_group.my_db_pmg
+
