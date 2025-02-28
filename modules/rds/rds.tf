@@ -91,6 +91,7 @@ resource "aws_db_instance" "terra_rds_intance" {
   allocated_storage = 20
   storage_type      = "gp2"
   engine            = "postgres"
+  
   engine_version    = "12.19"
   instance_class    = "db.t3.micro"
   identifier        = "mydb"
@@ -138,7 +139,7 @@ resource "aws_db_instance" "terra_rds_replica" {
   instance_class      = "db.t3.medium"
 
   vpc_security_group_ids = [var.db_sec_group]
-
+  
   backup_retention_period      = 7
   backup_window                = "03:00-04:00"
   maintenance_window           = "mon:04:00-mon:04:30"
