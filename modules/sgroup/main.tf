@@ -101,6 +101,20 @@ resource "aws_security_group" "web_security_group" {
     # ]
   }
 
+   ingress {
+    description = "HTTP access 8080"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    # cidr_blocks = [ "${var.public_instance_1_ip}/32", "${var.public_instance_2_ip}/32" , "0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
+    # security_groups = [
+    #     # var.private_instance_1_ip,
+    #     # var.private_instance_2_ip
+    #     aws_security_group.exlb_security_group.id
+    # ]
+  }
+
   ingress {
     description = "HTTPS access"
     from_port   = 443
