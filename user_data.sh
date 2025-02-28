@@ -78,5 +78,5 @@ sudo ufw allow 'Nginx HTTP'
 sudo ufw allow 'Nginx HTTPS'
 
 # Print the public IP address of the server
-PUBLIC_IP=$(curl -s ifconfig.me)
-echo "Nginx installed successfully! You can access your server at http://$PUBLIC_IP"
+# PUBLIC_IP=$(curl -s ifconfig.me)
+echo "Nginx installed successfully! You can access your server "
