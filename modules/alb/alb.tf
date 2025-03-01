@@ -19,6 +19,22 @@ resource "aws_lb" "web_external_lb" {
   }
 }
 
+###################
+## WEB ALB LISTENER
+resource "aws_lb_listener" "web_alb_listener" {
+  load_balancer_arn = aws_lb.web_external_lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    # target_group_arn = aws_lb_target_group.app_lb_attaching.arn
+    target_group_arn = aws_lb_target_group.web_attaching_1.arn
+  }
+}
+
+
+#############################
+## WEB TARGET GROUP
 resource "aws_lb_target_group" "web_attaching_1" {
   name     = "Web-external-load-balancer-tg"
   port     = 80
