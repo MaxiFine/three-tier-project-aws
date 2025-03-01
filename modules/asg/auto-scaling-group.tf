@@ -94,8 +94,8 @@ resource "aws_launch_template" "app_asg_template" {
   name_prefix = "app_asg_template"
   # image_id = "ami-0322211ccfe5b6a20" # Ubuntu 20.04, eu-west-3
   # image_id               = "ami-0a9c85f551385c96d"
-  image_id               = "ami-05865e6b3e86cd438"
-  # image_id               = "ami-03fd334507439f4d1"
+  # image_id               = "ami-05865e6b3e86cd438"
+  image_id               = "ami-03fd334507439f4d1"
   instance_type          = "t3.micro"
   # key_name               = "vagrant-key"
   key_name               = var.key_name
@@ -169,6 +169,6 @@ resource "aws_autoscaling_attachment" "app_asg_attachment" {
   # autoscaling_group_name = aws_autoscaling_group.my_asg.id
   autoscaling_group_name = aws_autoscaling_group.app_asg.id
   # lb_target_group_arn = aws_lb_target_group.my_target_group.arn
-  lb_target_group_arn = var.app_alb_arn
+  lb_target_group_arn = var.web_alb_arn
 }
 
