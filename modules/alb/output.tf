@@ -3,13 +3,17 @@ output "external_alb_id" {
 }
 
 output "external_alb_target_arn" {
-  value = aws_lb_target_group.web_attaching_1.arn
+  value = aws_lb_target_group.web_external_tgroup.arn
 }
 
 # output "external_alb_listener" {
 #   value = aws_lb_listener.web_listener.id
 # }
 
+
+output "app_alr_arn_2" {
+  value = aws_lb_target_group.app_internal_tgroup.arn
+}
 
 
 output "internal_alb_id" {
@@ -26,3 +30,8 @@ output "internal_alb_arn" {
 # output "internal_alb_listener" {
 #   value = aws_lb_listener.app_listener.id
 # }
+
+# In modules/alb/outputs.tf
+output "internal_alb_target_arn" {  # Fix: Use target group ARN, not ALB ARN
+  value = aws_lb_target_group.app_internal_tgroup.arn
+}

@@ -30,3 +30,12 @@ output "app_reduce_policy_arn" {
 # output "kep_pair" {
 #   value = aws_key_pair.
 # }
+
+# In modules/alb/outputs.tf
+output "external_alb_target_arn_" {
+  value = aws_autoscaling_group.web_asg.arn
+}
+
+output "internal_alb_target_arn" {  # Fix: Use target group ARN, not ALB ARN
+  value = aws_autoscaling_group.app_asg.arn
+}

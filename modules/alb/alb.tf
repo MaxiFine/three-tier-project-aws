@@ -19,7 +19,23 @@ resource "aws_lb" "web_external_lb" {
   }
 }
 
-resource "aws_lb_target_group" "web_attaching_1" {
+###################
+## WEB ALB LISTENER
+resource "aws_lb_listener" "web_alb_listener" {
+  load_balancer_arn = aws_lb.web_external_lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    # target_group_arn = aws_lb_target_group.app_lb_attaching.arn
+    target_group_arn = aws_lb_target_group.web_external_tgroup.arn
+  }
+}
+
+
+#############################
+## WEB TARGET GROUP
+resource "aws_lb_target_group" "web_external_tgroup" {
   name     = "Web-external-load-balancer-tg"
   port     = 80
   protocol = "HTTP"
@@ -60,7 +76,7 @@ resource "aws_lb" "app_internal_lb" {
   }
 }
 
-resource "aws_lb_target_group" "app_lb_attaching" {
+resource "aws_lb_target_group" "app_internal_tgroup" {
   name     = "App-internal-load-balancer-tg"
   port     = 80
   protocol = "HTTP"
@@ -92,7 +108,7 @@ resource "aws_lb_listener" "app_alb_listener" {
   protocol          = "HTTP"
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.app_lb_attaching.arn
+    target_group_arn = aws_lb_target_group.app_internal_tgroup.arn
   }
 }
 

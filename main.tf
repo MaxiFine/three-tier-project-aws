@@ -31,16 +31,16 @@ module "alb" {
   public_web_subnet_2  = module.vpc.public_sub_2
   private_app_subnet_1 = module.vpc.private_sub_1
   private_app_subnet_2 = module.vpc.private_sub_2
-  web_sgroup         = module.sgroup.web_layer_sg_id
-  app_sgroup         = module.sgroup.app_layer_sg_id
- 
+  web_sgroup           = module.sgroup.web_layer_sg_id
+  app_sgroup           = module.sgroup.app_layer_sg_id
+
 
 }
 
 
 module "sgroup" {
-  source                = "./modules/sgroup"
-  vpc_id                = module.vpc.vpc_id
+  source   = "./modules/sgroup"
+  vpc_id   = module.vpc.vpc_id
   vpc_cidr = module.vpc.vpc_cidr
 }
 
@@ -54,7 +54,7 @@ module "ec2" {
   public_web_subnet_2  = module.vpc.public_sub_2 # Us
   private_app_subnet_1 = module.vpc.private_sub_1
   private_app_subnet_2 = module.vpc.private_sub_2
-  
+
 
 
 }
@@ -69,12 +69,9 @@ module "asg" {
   public_subnet_2_cidr  = module.vpc.public_sub_2 # Us
   asg_app_sg            = module.sgroup.app_layer_sg_id
   asg_web_sg            = module.sgroup.web_layer_sg_id
-  # alb attachment to asg
-  depends_on = [module.alb]
-  web_alb_arn = module.alb.external_alb_target_arn
-  app_alb_arn = module.alb.internal_alb_arn
-  # web_asg_arn = module.asg.web_asg_arn
-  # app_asg_arn = module.asg.app_asg_arn
+  web_alb_arn           = module.alb.external_alb_target_arn
+  # app_alb_arn           = module.alb.internal_alb_arn
+  app_alb_arn           = module.alb.internal_alb_target_arn
   key_name = module.key_pair.rsa_key_name
 }
 
@@ -85,29 +82,29 @@ module "s3" {
 }
 
 module "rds" {
-  source = "./modules/rds"
+  source       = "./modules/rds"
   db_sec_group = module.sgroup.db_layer_sg_arn
-  db_subnet_1 = module.vpc.db_sub_1
-  db_subnet_2 = module.vpc.db_sub_2
+  db_subnet_1  = module.vpc.db_sub_1
+  db_subnet_2  = module.vpc.db_sub_2
 
 }
 
 module "sns" {
   source = "./modules/sns"
-  
+
 }
 
 module "cwatch" {
-  source = "./modules/cwatch"
-  sns_topic_arn = module.sns.sns_arn
+  source          = "./modules/cwatch"
+  sns_topic_arn   = module.sns.sns_arn
   web_inc_asg_arn = module.asg.web_increase_policy_arn
-  web_decr_asg = module.asg.web_decrease_policy_arn
+  web_decr_asg    = module.asg.web_decrease_policy_arn
   app_Inc_asg_arn = module.asg.app_increase_policy_arn
   app_dcr_asg_arn = module.asg.app_reduce_policy_arn
 }
 
 module "key_pair" {
-  source = "./modules/kpair"
+  source          = "./modules/kpair"
 }
 
 # module "route53" {
