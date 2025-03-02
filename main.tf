@@ -69,12 +69,9 @@ module "asg" {
   public_subnet_2_cidr  = module.vpc.public_sub_2 # Us
   asg_app_sg            = module.sgroup.app_layer_sg_id
   asg_web_sg            = module.sgroup.web_layer_sg_id
-  # alb attachment to asg
-  # depends_on = [module.alb]
   web_alb_arn           = module.alb.external_alb_target_arn
-  app_alb_arn           = module.alb.internal_alb_arn
-  # web_asg_arn = module.asg.web_asg_arn
-  # app_asg_arn = module.asg.app_asg_arn
+  # app_alb_arn           = module.alb.internal_alb_arn
+  app_alb_arn           = module.alb.internal_alb_target_arn
   key_name = module.key_pair.rsa_key_name
 }
 
