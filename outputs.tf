@@ -93,20 +93,20 @@ output "name" {
 }
 
 
-output "s3_source_bucket_arn" {
-  value = module.s3.s3_source_bucket_arn
-}
+# output "s3_source_bucket_arn" {
+#   value = module.s3.s3_source_bucket_arn
+# }
 
-output "s3_source_bucket_id" {
-  value = module.s3.s3_source_bucket_id
-}
+# output "s3_source_bucket_id" {
+#   value = module.s3.s3_source_bucket_id
+# }
 
-output "s3_dest_bucket_arn" {
-  value = module.s3.s3_dest_bucket_arn
-}
-output "s3_dest_bucket_id" {
-  value = module.s3.s3_dest_bucket_id
-}
+# output "s3_dest_bucket_arn" {
+#   value = module.s3.s3_dest_bucket_arn
+# }
+# output "s3_dest_bucket_id" {
+#   value = module.s3.s3_dest_bucket_id
+# }
 
 output "sns_arn" {
   value = module.sns.sns_arn
