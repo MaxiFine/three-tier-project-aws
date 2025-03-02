@@ -53,8 +53,8 @@ resource "aws_iam_policy_attachment" "rds_monitoring_attachment" {
 #   }
 # }
 
-resource "aws_db_parameter_group" "my_db_pmg" {
-  name   = "my-db-pg"
+resource "aws_db_parameter_group" "rds_db_pmg" {
+  name   = "ps-gd-pg"
   family = "postgres12"  # PostgreSQL 12
 
   parameter {
@@ -122,11 +122,16 @@ resource "aws_db_instance" "terra_rds_intance" {
   # Encryption for access and security
   kms_key_id = aws_kms_key.rds_kms_key.arn
 
+  # testing fix for parameter group for pmg
+  apply_immediately = false
+
   # parameter group
-  parameter_group_name = aws_db_parameter_group.my_db_pmg.name
+  parameter_group_name = aws_db_parameter_group.rds_db_pmg.name
 
   # Multi az deployments
   multi_az = true
+
+  
 
 }
 
@@ -151,7 +156,7 @@ resource "aws_db_instance" "terra_rds_replica" {
   storage_encrypted            = true
   kms_key_id                   = aws_kms_key.rds_kms_key.arn
 
-  parameter_group_name = aws_db_parameter_group.my_db_pmg.name
+  parameter_group_name = aws_db_parameter_group.rds_db_pmg.name
 
   # Enable Multi-AZ deployment for high availability
   multi_az = true
@@ -173,14 +178,3 @@ resource "aws_db_instance_automated_backups_replication" "replica_default_region
 
   provider = aws.terra_rds_replica
 }
-
-# resource "aws_kms_key" "my_kms_key_us_west" {
-#   description = "My KMS Key for RDS Encryption"
-#   deletion_window_in_days = 30
-
-#   tags = {
-#     Name = "MyKMSKey"
-#   }
-
-#   provider = aws.replica
-# }
