@@ -4,3 +4,7 @@ output "sns_arn" {
 output "sns_id" {
   value = aws_sns_topic.mx_sns_topic.id
 }
+
+output "sns_name" {
+  value = aws_sns_topic.mx_sns_topic.name
+}
