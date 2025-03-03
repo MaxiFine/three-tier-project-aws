@@ -93,6 +93,55 @@ output "name" {
 }
 
 
+########
+# SNS OUTPUTS
+output "sns_topic_arn" {
+  value = module.sns.sns_arn
+}
+
+output "sns_topic_id" {
+  value = module.sns.sns_id
+}
+
+output "sns_name" {
+  value = module.sns.sns_name
+}
+
+###############
+# ASG OUPUTS
+output "asg_web_id" {
+  value = module.asg.web_asg_id  
+}
+# ASG OUPUTS
+output "asg_web_arn" {
+  value = module.asg.web_asg_arn  
+}
+
+
+output "asg_app_id" {
+  value = module.asg.app_asg_id
+}
+# ASG OUPUTS
+output "asg_app_arn" {
+  value = module.asg.web_asg_id  
+}
+
+###############
+# ALB OUTPUTS
+output "alb_web_id" {
+  value = module.alb.external_alb_id
+}
+output "alb_web_arn" {
+  value = module.alb.external_alb_target_arn
+}
+output "alb_app_arn" {
+  value = module.alb.internal_alb_arn
+}
+output "alb_app_id" {
+  value = module.alb.internal_alb_id
+}
+
+
 # output "s3_source_bucket_arn" {
 #   value = module.s3.s3_source_bucket_arn
 # }
