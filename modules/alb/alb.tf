@@ -36,7 +36,7 @@ resource "aws_lb_listener" "web_alb_listener" {
 #############################
 ## WEB TARGET GROUP
 resource "aws_lb_target_group" "web_external_tgroup" {
-  name     = "Web-external-load-balancer-tg"
+  name     = "Web-load-balancer-tg"
   port     = 80
   protocol = "HTTP"
   # vpc_id   = aws_vpc.vpc_01.id
@@ -62,7 +62,7 @@ resource "aws_lb_target_group" "web_external_tgroup" {
 #####################################
 ## APPLICATION LOAD BALANCER
 resource "aws_lb" "app_internal_lb" {
-  name               = "App-internal-load-balancer"
+  name               = "App-load-balancer"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.app_sgroup]
