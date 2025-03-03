@@ -64,6 +64,9 @@
 #   policy_arn = aws_iam_policy.replication.arn
 # }
 
+data "aws_caller_identity" "current" {}
+
+
 resource "aws_iam_policy" "replication" {
   name = "s3-replication-policy"
 
@@ -127,7 +130,8 @@ resource "aws_kms_key" "replica" {
         Sid    = "AllowRootAccess",
         Effect = "Allow",
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.curren.account_id}:root"
+          # AWS = "arn:aws:iam::${data.aws_caller_identity.account_id}:root"
         },
         Action = "kms:*",
         Resource = "*"
