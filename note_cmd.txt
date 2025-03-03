@@ -1,2 +1,46 @@
 terraform state rm module.rds.aws_db_parameter_group.my_db_pmg
 
+aws cloudtrail lookup-events --lookup-attributes AttributeKey=EventName,AttributeValue=StartDBInstanceAutomatedBackupsReplication --region eu-west-1
+
+storage_encrypted = true
+kms_key_id        = "arn:aws:kms:eu-west-1:266735814394:key/9cb76b29-0a17-469d-a3f7-e6395cddbc60"
+
+
+aws kms describe-key --key-id 9cb76b29-0a17-469d-a3f7-e6395cddbc60 --region eu-west-1 | grep KeyState
+
+to renable key
+aws kms enable-key --key-id 9cb76b29-0a17-469d-a3f7-e6395cddbc60 --region eu-west-1
+
+veriyfy Permissions
+aws rds describe-db-instances --db-instance-identifier mydb --query "DBInstances[*].AssociatedRoles"
+
+
+KMS IAM ROLE ANS Permissions
+{
+  "Effect": "Allow",
+  "Action": [
+    "kms:Decrypt",
+    "kms:DescribeKey",
+    "kms:GenerateDataKeyWithoutPlaintext",
+    "kms:Encrypt"
+  ],
+  "Resource": "arn:aws:kms:eu-west-1:266735814394:key/9cb76b29-0a17-469d-a3f7-e6395cddbc60"
+}
+
+# PostgreSQL version in aws
+aws rds describe-db-engine-versions --engine postgres --query "DBEngineVersions[].EngineVersion"
+
+
+# reusing pmg
+terraform import module.rds.aws_db_parameter_group.rds_db_pmg ps-gd-pg
+
+
+# rds backup configs
+aws rds describe-db-engine-versions --region eu-west-1 --engine postgres --query 'DBEngineVersions[*].SupportsDBInstanceAutomatedBackupsReplication'
+
+Manual Backup for rds
+aws rds create-db-snapshot --db-instance-identifier mxterards --db-snapshot-identifier mxterards-snapshot
+
+aws rds copy-db-snapshot --source-db-snapshot-identifier arn:aws:rds:eu-west-1:ACCOUNT_ID:snapshot:mxterards-snapshot \
+  --target-db-snapshot-identifier mxterards-snapshot-copy \
+  --destination-region us-east-1
