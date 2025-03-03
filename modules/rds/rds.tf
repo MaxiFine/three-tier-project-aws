@@ -60,16 +60,19 @@ resource "aws_db_parameter_group" "rds_db_pmg" {
   parameter {
     name  = "max_connections"
     value = "100"
+    apply_method = "pending-reboot"
   }
 
   parameter {
     name  = "statement_timeout"  # Instead of connection_timeout
     value = "15000"  # Value in milliseconds (15 seconds)
+    apply_method = "immediate"
   }
 
   parameter {
     name  = "work_mem"
     value = "4096"
+    apply_method = "pending-reboot"  # fix for pmg error
   }
 }
 
@@ -95,10 +98,10 @@ resource "aws_db_instance" "terra_rds_intance" {
   engine_version    = "12.19"
   instance_class    = "db.t3.micro"
   identifier        = "mydb"
-  username          = "mxterradb"
-  password          = "maxwell22"
-
-  vpc_security_group_ids = [var.db_sec_group]
+  username          = var.db_u_name
+  password          = var.db_pass
+  
+  vpc_security_group_ids = [var.db_sec_group_id]
   db_subnet_group_name   = aws_db_subnet_group.rds_subnets.name
 
   # automating backup configs
@@ -120,10 +123,14 @@ resource "aws_db_instance" "terra_rds_intance" {
   performance_insights_enabled = true
 
   # Encryption for access and security
+  storage_encrypted = true
   kms_key_id = aws_kms_key.rds_kms_key.arn
 
   # testing fix for parameter group for pmg
-  apply_immediately = false
+  # apply_immediately = 
+  lifecycle {
+    create_before_destroy = true
+  }
 
   # parameter group
   parameter_group_name = aws_db_parameter_group.rds_db_pmg.name
@@ -143,7 +150,7 @@ resource "aws_db_instance" "terra_rds_replica" {
   replicate_source_db = aws_db_instance.terra_rds_intance.identifier
   instance_class      = "db.t3.medium"
 
-  vpc_security_group_ids = [var.db_sec_group]
+  vpc_security_group_ids = [var.db_sec_group_id]
   
   backup_retention_period      = 7
   backup_window                = "03:00-04:00"
