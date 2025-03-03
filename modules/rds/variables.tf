@@ -16,7 +16,7 @@ variable "db_sec_group_id" {
 
 
 variable "db_u_name" {
-  default = "mxterradb"
+  default     = "mxterradb"
   description = "DB Username"
 }
 
