@@ -12,21 +12,11 @@ resource "aws_instance" "PublicWebTemplat-1" {
   subnet_id = var.public_web_subnet_1
   key_name = "vagrant-key"
   # security_groups = [ var.web_security_group ]
-  # user_data = base64encode(data.index_file.user_data.rendered)
-  # user_data     = base64encode(templatefile("${path.module}/user_data.sh", {}))
-  # user_data = base64encode(templatefile("${path.root}/user_data.sh", {}))
-  # vpc_security_group_ids = [var.web_security_group]
+  vpc_security_group_ids = [var.web_security_group_id]
   # vpc_security_group_ids = []
-  #  user_data = <<-EOF
-  #             #!/bin/bash
-  #             echo "Hello, World 1" > index.html
-  #             python3 -m http.server 8080 &
-  #             EOF
+
   user_data = file("${path.root}/user_data.sh")
-  security_groups = [var.web_security_group]
-
-
-
+  # security_groups = [var.web_security_group]
   tags = {
     Name = "PublicWebTemplat-1"
   }
@@ -66,8 +56,8 @@ resource "aws_instance" "PrivateAppTemplat-1" {
   # subnet_id     = aws_subnet.private-app-subnet-1.id
   subnet_id = var.private_app_subnet_1
   # security_groups = [ var.app_security_group ]
-  # vpc_security_group_ids = [ ]
-  security_groups = [var.app_security_group]
+  vpc_security_group_ids = [ var.app_security_group_id ]
+  # security_groups = [var.app_security_group_id]
   key_name = "vagrant-key"
 
   # vpc_security_group_ids = [ var.app_security_group ]
