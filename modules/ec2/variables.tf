@@ -23,11 +23,11 @@ variable "private_app_subnet_2" {
   type        = string
 }
 
-variable "web_security_group" {
+variable "web_security_group_id" {
   description = "SG for App Tier"
   type        = string
 }
-variable "app_security_group" {
+variable "app_security_group_id" {
   description = "SG for App Tier"
   type        = string
 }

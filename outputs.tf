@@ -1,23 +1,3 @@
-# output "lb_dns_name" {
-#   description = "DNS name of the load balancer"
-#   value       = aws_lb.application-load-balancer.arn
-
-# }
-
-# output "aws_instance_web_1" {
-#   value = aws_instance.PublicWebTemplat-1.id
-# }
-# output "aws_instance_web_2" {
-#   value = aws_instance.PublicWebTemplate-2.id
-# }
-# output "aws_instance_app_1" {
-#   value = aws_instance
-# }
-# output "aws_instance_app_2" {
-#   value = aws_instance.PublicWebTemplat-1.id
-# }
-
-
 ###################
 ## VPC NETWORKING COMPONENTS CONFIGS
 ###############################
@@ -141,22 +121,6 @@ output "alb_app_id" {
   value = module.alb.internal_alb_id
 }
 
-
-# output "s3_source_bucket_arn" {
-#   value = module.s3.s3_source_bucket_arn
-# }
-
-# output "s3_source_bucket_id" {
-#   value = module.s3.s3_source_bucket_id
-# }
-
-# output "s3_dest_bucket_arn" {
-#   value = module.s3.s3_dest_bucket_arn
-# }
-# output "s3_dest_bucket_id" {
-#   value = module.s3.s3_dest_bucket_id
-# }
-
 output "sns_arn" {
   value = module.sns.sns_arn
 }
@@ -177,32 +141,26 @@ output "web_cwatch_increase_policy" {
 output "web_cwatch_decrease_policy" {
   value = module.cwatch.web_decrease_ec2_policy_id
 }
-############
-## CHAT REFS
-# output "vpc_id" {
-#   value = module.vpc.vpc_id
-# }
 
-# output "private-subnet-1" {
-#   value = module.vpc["private-sub-1"]
-# }
 
-# output "private-subnet-2" {
-#   value = module.vpc["private-sub-2"]
-# }
+###################################
+## S3 SOURCE AND REPLICA BUCKETS
+output "s3_source_bucket_id" {
+  value = module.s3.origin_bucket_id
+}
+output "s3_source_bucket_arn" {
+  value = module.s3.origin_bucket_arn
+}
+output "s3_source_bucket_region" {
+  value = module.s3.origin_bucket_region
+}
+output "s3_repica_bucket_id" {
+  value = module.s3.replica_bucket_id
+}
+output "s3_replica_bucket_arn" {
+  value = module.s3.replica_bucket_arn
+}
+output "s3_replica_bucket_name" {
+  value = module.s3.replica_bucket_region
+}
 
-# output "pub-subnet-1" {
-#   value = module.vpc["public-sub-1"]
-# }
-
-# output "pub-subnet-2" {
-#   value = module.vpc["public-sub-2"]
-# }
-
-# output "db-subnet-1" {
-#   value = module.vpc["db-sub-1"]
-# }
-
-# output "db-subnet-2" {
-#   value = module.vpc["db-sub-2"]
-# }
