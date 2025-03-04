@@ -41,3 +41,4 @@
 *.tfstate.backup
 .terraform.lock.hcl
 *.tfstate.lock.info
+terraform.tfstate.*.backup
