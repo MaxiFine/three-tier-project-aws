@@ -48,8 +48,8 @@ module "sgroup" {
 module "ec2" {
   source               = "./modules/ec2"
   vpc_id               = module.vpc.vpc_id
-  web_security_group   = module.sgroup.web_layer_sg_id
-  app_security_group   = module.sgroup.app_layer_sg_id
+  web_security_group_id   = module.sgroup.web_layer_sg_id
+  app_security_group_id   = module.sgroup.app_layer_sg_id
   public_web_subnet_1  = module.vpc.public_sub_1 # Using bracket notation for outputs with hyphens
   public_web_subnet_2  = module.vpc.public_sub_2 # Us
   private_app_subnet_1 = module.vpc.private_sub_1
