@@ -2,12 +2,12 @@
 # Define AWS Providers
 # ===========================
 provider "aws" {
-  region = "eu-west-1"  # Origin region (Ireland)
+  region = "eu-west-1" # Origin region (Ireland)
 }
 
 provider "aws" {
   alias  = "replica"
-  region = "eu-central-1"  # Replica region (Frankfurt)
+  region = "eu-central-1" # Replica region (Frankfurt)
 }
 
 # Fetch AWS Account ID
@@ -149,6 +149,16 @@ resource "aws_kms_key" "replica" {
           "kms:GenerateDataKey*"
         ],
         Resource = "*"
+      },
+      # allow full accesss
+      {
+        Sid    = "AllowRootAccess"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        },
+        Action   = "kms:*",
+        Resource = "*"
       }
     ]
   })
@@ -190,6 +200,10 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     id     = "replication-rule"
     status = "Enabled"
 
+    delete_marker_replication {
+      status = "Disabled"
+    }
+
     destination {
       bucket        = aws_s3_bucket.replica.arn
       storage_class = "STANDARD"
@@ -201,6 +215,13 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
 
     filter {
       prefix = "" # Replicate all objects
+    }
+
+    source_selection_criteria {
+      sse_kms_encrypted_objects {
+        # Enabled = true
+        status = "Enabled"
+      }
     }
   }
 }
