@@ -11,6 +11,10 @@ output "app_asg_id" {
   value = aws_autoscaling_group.app_asg.id
 }
 
+output "wep_instance_ip" {
+  value = aws_autoscaling_group.web_asg.id
+}
+
 
 
 output "web_increase_policy_arn" {

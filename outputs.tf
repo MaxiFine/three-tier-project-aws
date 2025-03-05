@@ -90,11 +90,11 @@ output "sns_name" {
 ###############
 # ASG OUPUTS
 output "asg_web_id" {
-  value = module.asg.web_asg_id  
+  value = module.asg.web_asg_id
 }
 # ASG OUPUTS
 output "asg_web_arn" {
-  value = module.asg.web_asg_arn  
+  value = module.asg.web_asg_arn
 }
 
 
@@ -103,7 +103,7 @@ output "asg_app_id" {
 }
 # ASG OUPUTS
 output "asg_app_arn" {
-  value = module.asg.web_asg_id  
+  value = module.asg.web_asg_id
 }
 
 ###############

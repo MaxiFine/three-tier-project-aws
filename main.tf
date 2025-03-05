@@ -46,14 +46,14 @@ module "sgroup" {
 
 
 module "ec2" {
-  source               = "./modules/ec2"
-  vpc_id               = module.vpc.vpc_id
-  web_security_group_id   = module.sgroup.web_layer_sg_id
-  app_security_group_id   = module.sgroup.app_layer_sg_id
-  public_web_subnet_1  = module.vpc.public_sub_1 # Using bracket notation for outputs with hyphens
-  public_web_subnet_2  = module.vpc.public_sub_2 # Us
-  private_app_subnet_1 = module.vpc.private_sub_1
-  private_app_subnet_2 = module.vpc.private_sub_2
+  source                = "./modules/ec2"
+  vpc_id                = module.vpc.vpc_id
+  web_security_group_id = module.sgroup.web_layer_sg_id
+  app_security_group_id = module.sgroup.app_layer_sg_id
+  public_web_subnet_1   = module.vpc.public_sub_1 # Using bracket notation for outputs with hyphens
+  public_web_subnet_2   = module.vpc.public_sub_2 # Us
+  private_app_subnet_1  = module.vpc.private_sub_1
+  private_app_subnet_2  = module.vpc.private_sub_2
 
 
 
@@ -71,8 +71,8 @@ module "asg" {
   asg_web_sg            = module.sgroup.web_layer_sg_id
   web_alb_arn           = module.alb.external_alb_target_arn
   # app_alb_arn           = module.alb.internal_alb_arn
-  app_alb_arn           = module.alb.internal_alb_target_arn
-  key_name = module.key_pair.rsa_key_name
+  app_alb_arn = module.alb.internal_alb_target_arn
+  key_name    = module.key_pair.rsa_key_name
 }
 
 
@@ -82,10 +82,10 @@ module "s3" {
 }
 
 module "rds" {
-  source       = "./modules/rds"
+  source          = "./modules/rds"
   db_sec_group_id = module.sgroup.db_layer_sg_id
-  db_subnet_1  = module.vpc.db_sub_1
-  db_subnet_2  = module.vpc.db_sub_2
+  db_subnet_1     = module.vpc.db_sub_1
+  db_subnet_2     = module.vpc.db_sub_2
 
 }
 
@@ -104,12 +104,16 @@ module "cwatch" {
 }
 
 module "key_pair" {
-  source          = "./modules/kpair"
+  source = "./modules/kpair"
 }
 
-# module "route53" {
-#   source = "./modules/route53"
-# }
+module "route53" {
+  source = "./modules/route53"
+  primaryip1 = module.ec2.public_id_1
+  primaryip2 = module.ec2.public_id_1  # get the asg ip to replace
+  secondaryip1 = module.ec2.private_id_1
+
+}
 
 
 
