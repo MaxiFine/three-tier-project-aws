@@ -7,9 +7,9 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-resource "aws_route53_zone" "main" {
-  name = "mxdrproject.click"
-}
+# resource "aws_route53_zone" "main" {
+#   name = "mxdrproject.click"
+# }
 
 # --------------------------
 # IAM Role for Lambda Function
@@ -63,15 +63,19 @@ resource "aws_iam_role_policy" "lambda_dns_failover_policy" {
 # --------------------------
 resource "aws_lambda_function" "dns_failover" {
   function_name = "dns_failover_function"
-  filename      = "lambda_function.zip"  # Ensure this ZIP file is available locally
+#   filename      = "lambda_function.zip"  # Ensure this ZIP file is available locally
+  filename      = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.9"
   role          = aws_iam_role.lambda_dns_failover_role.arn
 
   environment {
     variables = {
-      HOSTED_ZONE_ID    = aws_route53_zone.main.zone_id
-      RECORD_NAME       = "app.mxdrproject.click"         # Change to your record name
+    #   HOSTED_ZONE_ID    = aws_route53_zone.main.zone_id
+      HOSTED_ZONE_ID    = var.main_zone_id
+    #   RECORD_NAME       = "app.mxdrproject.click"         # Change to your record name
+      RECORD_NAME       = var.record_name       # Change to your record name
       SECONDARY_TARGET  = "secondary.example.com"           # Replace with your secondary resource DNS name
       SECONDARY_ZONE_ID = "Z3P5QSUBK4POTI"                   # Replace with your secondary resource's hosted zone ID
     }
@@ -117,4 +121,16 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   function_name = aws_lambda_function.dns_failover.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.failover_rule.arn
+}
+
+# data "archive_file" "lambda_zip" {
+#   type        = "zip"
+#   source_dir  = "${path.module}/iam/lambda_recovery.py"
+#   output_path = "${path.module}/lambda.zip"
+# }
+
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "${path.module}/lambda_recovery.py"
+  output_path = "${path.module}/lambda.zip"
 }
