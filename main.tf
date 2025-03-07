@@ -109,9 +109,11 @@ module "key_pair" {
 
 module "route53" {
   source = "./modules/route53"
-  primaryip1 = module.ec2.public_id_1
-  primaryip2 = module.ec2.public_id_1  # get the asg ip to replace
-  secondaryip1 = module.ec2.private_id_1
+  external_alb_dns = module.alb.external_alb_dns
+  
+  # primaryip1 = module.ec2.public_ip_1
+  # primaryip2 = module.ec2.public_ip_1  # get the asg ip to replace
+  # secondaryip1 = module.ec2.private_ip_2
 
 }
 
