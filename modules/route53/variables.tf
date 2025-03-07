@@ -77,3 +77,18 @@
 variable "external_alb_dns" {
   description = "External ALB dns"
 }
+
+variable "external_alb_zone_id" {
+  description = "External ALB zone id"
+}
+
+# variable "web_record_1" {
+#   description = "Public Record 1"
+# }
+# variable "web_record_2" {
+#   description = "Public Record 2"
+# }
+
+variable "sns_notify_arn" {
+  description = "SNS topic for notify"
+}
