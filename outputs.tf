@@ -164,3 +164,17 @@ output "s3_replica_bucket_name" {
   value = module.s3.replica_bucket_region
 }
 
+##################
+## EC2 OUTPUTS
+# output "pub_instance_ip_1" {
+#   value = module.ec2.public_id_1
+# }
+# output "pub_instance_ip_2" {
+#   value = module.ec2.public_ip_1
+# }
+# output "pub_instance_ip_1" {
+#   value = module.ec2.public_id_1
+# }
+# output "pub_instance_ip_1" {
+#   value = module.ec2.public_id_1
+# }
