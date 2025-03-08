@@ -110,12 +110,14 @@ module "key_pair" {
 module "route53" {
   source = "./modules/route53"
   external_alb_dns = module.alb.external_alb_dns
-  
-  # primaryip1 = module.ec2.public_ip_1
-  # primaryip2 = module.ec2.public_ip_1  # get the asg ip to replace
-  # secondaryip1 = module.ec2.private_ip_2
-
+  external_alb_zone_id = module.alb.external_alb_zone_id
+  sns_notify_arn = module.sns.sns_arn
 }
 
+module "iam" {
+  source = "./modules/iam"
+  main_zone_id = module.route53.zone_id
+  record_name = module.route53.zone_name
 
+}
 

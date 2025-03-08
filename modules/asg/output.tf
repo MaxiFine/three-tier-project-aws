@@ -11,8 +11,8 @@ output "app_asg_id" {
   value = aws_autoscaling_group.app_asg.id
 }
 
-output "wep_instance_ip" {
-  value = aws_autoscaling_group.web_asg.id
+output "wep_asg_instance_arn" {
+  value = aws_launch_template.web_asg_template.arn
 }
 
 

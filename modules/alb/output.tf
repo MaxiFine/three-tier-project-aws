@@ -5,6 +5,9 @@ output "external_alb_id" {
 output "external_alb_target_arn" {
   value = aws_lb_target_group.web_external_tgroup.arn
 }
+output "external_alb_zone_id" {
+  value = aws_lb.web_external_lb.zone_id
+}
 
 output "external_alb_dns" {
   value = aws_lb.web_external_lb.dns_name

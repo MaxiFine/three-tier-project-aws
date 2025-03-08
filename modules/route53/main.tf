@@ -2,26 +2,34 @@
 resource "aws_route53_zone" "main" {
   name    = "mxdrproject.click"
   comment = "Primary domain zone"
+  # vpc {
+  #   vpc_id = module.vpc.vpc_id
+  # }
+
+  tags = {
+    Name = "primary-region"
+  }
+  
 }
 
 # Health Check for Primary Region (e.g., eu-west-1)
-resource "aws_route53_health_check" "primary_health_check_https" {
-  fqdn              = "primary.mxdrproject.click"  # Replace with your primary endpoint
-  port              = 443
-  type              = "HTTPS"
-  resource_path     = "/health"  # Your health check endpoint
-  failure_threshold = 3
-  request_interval  = 30
+# resource "aws_route53_health_check" "primary_health_check_https" {
+#   fqdn              = "mxdrproject.click"  # Replace with your primary endpoint
+#   port              = 443
+#   type              = "HTTPS"
+#   resource_path     = "/health"  # Your health check endpoint
+#   failure_threshold = 3
+#   request_interval  = 30
 
-  tags = {
-    Name = "Primary-Region-Health-Check"
-  }
-}
+#   tags = {
+#     Name = "Primary-Region-Health-Check"
+#   }
+# }
 resource "aws_route53_health_check" "primary_health_check_http" {
-  fqdn              = "primary.mxdrproject.click"  # Replace with your primary endpoint
+  fqdn              = "mxdrproject.click"  # Replace with your primary endpoint
   port              = 80
   type              = "HTTP"
-  resource_path     = "/health"  # Your health check endpoint
+  resource_path     = "/"  # Your health check endpoint
   failure_threshold = 3
   request_interval  = 30
 
@@ -33,16 +41,19 @@ resource "aws_route53_health_check" "primary_health_check_http" {
 # Failover Record for PRIMARY (Active)
 resource "aws_route53_record" "primary_failover" {
   zone_id = aws_route53_zone.main.zone_id
-  name    = "myapp.mxdrproject.click"  # Your domain/subdomain
+  name    = "mxdrproject.click"  # Your domain/subdomain
   type    = "A"
   # ttl     = 60
+  # records = [ var.external_alb_dns ]
 
   set_identifier = "primary-region"
 
   # Alias to your PRIMARY resource (e.g., ALB in eu-west-1)
   alias {
-    name                   = "dualstack.primary-alb-123456.eu-west-1.elb.amazonaws.com"  # Replace with your ALB DNS
-    zone_id                = "Z1ABC2345XYZ6"  # Replace with ALB's hosted zone ID (eu-west-1 ALB)
+    # name                   = "dualstack.primary-alb-123456.eu-west-1.elb.amazonaws.com"  # Replace with your ALB DNS
+    # zone_id                = "Z1ABC2345XYZ6"  # Replace with ALB's hosted zone ID (eu-west-1 ALB)
+    name = var.external_alb_dns
+    zone_id = var.external_alb_zone_id
     evaluate_target_health = true
   }
 
@@ -59,7 +70,7 @@ resource "aws_route53_record" "primary_failover" {
 # Failover Record for SECONDARY (Passive)
 resource "aws_route53_record" "secondary_failover" {
   zone_id = aws_route53_zone.main.zone_id
-  name    = "myapp.mxdrproject.click"
+  name    = "recovery.mxdrproject.click"
   type    = "A"
   # ttl     = 60
 
@@ -69,7 +80,7 @@ resource "aws_route53_record" "secondary_failover" {
   alias {
     # name                   = "dualstack.secondary-alb-789012.eu-central-1.elb.amazonaws.com"  # Replace with your ALB DNS
     name                   = "${var.external_alb_dns}"  # Replace with your ALB DNS
-    zone_id                = "Z2DEF3456WXY7"  # Replace with ALB's hosted zone ID (eu-central-1 ALB)
+    zone_id                = "${var.external_alb_zone_id}"  # Replace with ALB's hosted zone ID (eu-central-1 ALB)
     evaluate_target_health = true
   }
 
@@ -98,3 +109,20 @@ resource "aws_cloudwatch_event_rule" "failover_trigger" {
 }
 EOF
 }
+
+
+###############################
+## CW METRIC CHECK
+
+resource "aws_cloudwatch_metric_alarm" "primary_health_alarm" {
+  alarm_name          = "PrimaryRegionHealthCheckFailed"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "HealthCheckStatus"
+  namespace          = "AWS/Route53"
+  period             = 60
+  statistic          = "Minimum"
+  threshold          = 1
+  alarm_actions      = [var.sns_notify_arn]
+}
+
