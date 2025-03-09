@@ -1,16 +1,17 @@
 # Route 53 Hosted Zone
-resource "aws_route53_zone" "main" {
-  name    = "mxdrproject.click"
-  comment = "Primary domain zone"
-  # vpc {
-  #   vpc_id = module.vpc.vpc_id
-  # }
+# resource "aws_route53_zone" "main" {
+#   # name    = "mxdrproject.click"
+#   name    = "mxdrproject.click"
+#   comment = "Primary domain zone"
+#   # vpc {
+#   #   vpc_id = module.vpc.vpc_id
+#   # }
 
-  tags = {
-    Name = "primary-region"
-  }
+#   tags = {
+#     Name = "primary-region"
+#   }
   
-}
+# }
 
 # Health Check for Primary Region (e.g., eu-west-1)
 # resource "aws_route53_health_check" "primary_health_check_https" {
@@ -26,7 +27,8 @@ resource "aws_route53_zone" "main" {
 #   }
 # }
 resource "aws_route53_health_check" "primary_health_check_http" {
-  fqdn              = "mxdrproject.click"  # Replace with your primary endpoint
+  # fqdn              = "mxdrproject.click"  # Replace with your primary endpoint
+  fqdn              = "primary.mxdr.free-sns.live"  # Replace with your primary endpoint
   port              = 80
   type              = "HTTP"
   resource_path     = "/"  # Your health check endpoint
@@ -40,8 +42,9 @@ resource "aws_route53_health_check" "primary_health_check_http" {
 
 # Failover Record for PRIMARY (Active)
 resource "aws_route53_record" "primary_failover" {
-  zone_id = aws_route53_zone.main.zone_id
-  name    = "mxdrproject.click"  # Your domain/subdomain
+  # zone_id = aws_route53_zone.main.zone_id
+  zone_id = "Z02466032V2YVHOWCRNHS"
+  name    = "primary.mxdr.free-sns.live"  # Your domain/subdomain
   type    = "A"
   # ttl     = 60
   # records = [ var.external_alb_dns ]
@@ -69,8 +72,10 @@ resource "aws_route53_record" "primary_failover" {
 
 # Failover Record for SECONDARY (Passive)
 resource "aws_route53_record" "secondary_failover" {
-  zone_id = aws_route53_zone.main.zone_id
-  name    = "recovery.mxdrproject.click"
+  # zone_id = aws_route53_zone.main.zone_id
+  # name    = "recovery.mxdrproject.click"
+  zone_id = "Z02466032V2YVHOWCRNHS"
+  name    = "primary.mxdr.free-sns.live" 
   type    = "A"
   # ttl     = 60
 
