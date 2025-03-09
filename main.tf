@@ -116,8 +116,8 @@ module "route53" {
 
 module "iam" {
   source = "./modules/iam"
-  main_zone_id = module.route53.zone_id
-  record_name = module.route53.zone_name
+  main_zone_id = "Z02466032V2YVHOWCRNHS"
+  record_name = "primary.mxdr.free-sns.live"
 
 }
 
