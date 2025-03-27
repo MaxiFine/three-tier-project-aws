@@ -102,7 +102,7 @@ resource "aws_db_instance" "terra_rds_intance" {
 
 resource "aws_db_instance" "terra_rds_replica" {
   replicate_source_db   = aws_db_instance.terra_rds_intance.identifier
-  instance_class        = "db.t3.medium"
+  instance_class        = "db.t3.micro"
   identifier            = "mxterards-replica"
 #   availability_zone     = "eu-central-1a"  # not for multi-az
   skip_final_snapshot   = true
