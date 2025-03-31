@@ -125,6 +125,6 @@ resource "aws_autoscaling_policy" "app_reduce_ec2_policy" {
 # Fixed attachment resource
 resource "aws_autoscaling_attachment" "app_asg_attachment" {
   autoscaling_group_name = aws_autoscaling_group.app_asg.name
-  lb_target_group_arn    = var.app_alb_arn  # Fixed: Removed brackets and corrected ALB reference
+  lb_target_group_arn    = var.app_alb_arn 
 }
 
