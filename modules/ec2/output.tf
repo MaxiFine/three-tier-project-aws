@@ -25,20 +25,20 @@ output "public_ip_1" {
   value       = aws_instance.PublicWebTemplat-1.public_ip
 
 }
-output "public_ip_2" {
-  description = "AWS instance id"
-  value       = aws_instance.PublicWebTemplate-2.public_ip
+# output "public_ip_2" {
+#   description = "AWS instance id"
+#   value       = aws_instance.PublicWebTemplate-2.public_ip
 
-}
+# }
 
 output "private_ip_1" {
   description = "AWS instance id"
   value       = aws_instance.PrivateAppTemplat-1.public_ip
 }
-output "private_ip_2" {
-  description = "AWS instance id"
-  value       = aws_instance.PublicWebTemplate-2.public_ip
-}
+# output "private_ip_2" {
+#   description = "AWS instance id"
+#   value       = aws_instance.PublicWebTemplate-2.public_ip
+# }
 
 # output "private_ip_2" {
 #   description = "AWS instance id"
