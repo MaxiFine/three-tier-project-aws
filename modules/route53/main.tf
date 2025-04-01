@@ -1,32 +1,3 @@
-# Route 53 Hosted Zone
-# resource "aws_route53_zone" "main" {
-#   # name    = "mxdrproject.click"
-#   name    = "mxdrproject.click"
-#   comment = "Primary domain zone"
-#   # vpc {
-#   #   vpc_id = module.vpc.vpc_id
-#   # }
-
-#   tags = {
-#     Name = "primary-region"
-#   }
-  
-# }
-
-# Health Check for Primary Region (e.g., eu-west-1)
-# resource "aws_route53_health_check" "primary_health_check_https" {
-#   fqdn              = "mxdrproject.click"  # Replace with your primary endpoint
-#   port              = 443
-#   type              = "HTTPS"
-#   resource_path     = "/health"  # Your health check endpoint
-#   failure_threshold = 3
-#   request_interval  = 30
-
-#   tags = {
-#     Name = "Primary-Region-Health-Check"
-#   }
-# }
-
 provider "aws" {
   region = "eu-west-1"  # Primary region
 }
@@ -40,7 +11,7 @@ provider "aws" {
 
 resource "aws_route53_health_check" "primary_health_check_http" {
   # fqdn              = "mxdrproject.click"  # Replace with your primary endpoint
-  fqdn              = "primary.mxdr.free-sns.live"  # Replace with your primary endpoint
+  fqdn              = "mxdr.free-sns.live"  # Replace with your primary endpoint
   port              = 80
   type              = "HTTP"
   resource_path     = "/"  # Your health check endpoint
@@ -55,7 +26,7 @@ resource "aws_route53_health_check" "primary_health_check_http" {
 # Failover Record for PRIMARY (Active)
 resource "aws_route53_record" "primary_failover" {
   # zone_id = aws_route53_zone.main.zone_id
-  zone_id = "Z02466032V2YVHOWCRNHS"
+  zone_id = var.zone_id
   name    = "primary.mxdr.free-sns.live"  # Your domain/subdomain
   type    = "A"
   # ttl     = 60
@@ -86,7 +57,7 @@ resource "aws_route53_record" "primary_failover" {
 resource "aws_route53_record" "secondary_failover" {
   # zone_id = aws_route53_zone.main.zone_id
   # name    = "recovery.mxdrproject.click"
-  zone_id = "Z02466032V2YVHOWCRNHS"
+  zone_id = var.zone_id
   name    = "primary.mxdr.free-sns.live" 
   type    = "A"
   # ttl     = 60
@@ -111,128 +82,112 @@ resource "aws_route53_record" "secondary_failover" {
 
 
 ####################
-# CW TO detect failure
-resource "aws_cloudwatch_event_rule" "failover_trigger" {
-  name        = "failover-trigger"
-  description = "Triggers Lambda on failure detection"
-
-  event_pattern = <<EOF
-{
-  "source": ["aws.health"],
-  "detail-type": ["AWS Health Event"],
-  "detail": {
-    "service": ["RDS", "EC2"]
-  }
-}
-EOF
-}
-
-
-###############################
-## CW METRIC CHECK
-
-resource "aws_cloudwatch_metric_alarm" "primary_health_alarm" {
-  alarm_name          = "PrimaryRegionHealthCheckFailed"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = 2
-  metric_name         = "HealthCheckStatus"
-  namespace          = "AWS/Route53"
-  period             = 60
-  statistic          = "Minimum"
-  threshold          = 1
-  alarm_actions      = [var.sns_notify_arn]
-}
-
-
-# ########################################
-# # IAM Role for Lambda Execution
-# ########################################
-# resource "aws_iam_role" "lambda_exec_role" {
-#   name = "lambda_exec_role"
-#   assume_role_policy = jsonencode({
-#     Version   = "2012-10-17",
-#     Statement = [
-#       {
-#         Action    = "sts:AssumeRole",
-#         Principal = { Service = "lambda.amazonaws.com" },
-#         Effect    = "Allow"
-#       }
-#     ]
-#   })
-# }
-
-# # Attach a policy that grants sufficient permissions (for demo purposes AdministratorAccess is used;
-# # in production, please follow least privilege principles)
-# resource "aws_iam_policy_attachment" "lambda_policy_attach" {
-#   name       = "lambda_policy_attachment"
-#   roles      = [aws_iam_role.lambda_exec_role.name]
-#   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-# }
-
-# ########################################
-# # Lambda Function to Provision Secondary Resources
-# ########################################
-# resource "aws_lambda_function" "provision_secondary" {
-# #   filename         = "${archive_data.lambda_}"  # Your packaged Lambda code zip
-#   filename         = data.archive_file.lambda_zip.output_path  # Your packaged Lambda code zip
-#   function_name    = "ProvisionSecondaryResources"
-#   role             = aws_iam_role.lambda_exec_role.arn
-#   handler          = "index.handler"
-#   runtime          = "python3.8"
-#   source_code_hash = filebase64sha256("${data.archive_file.lambda_zip.output_path}")
-
-#   environment {
-#     variables = {
-#       # Pass any needed environment variables, for example:
-#       SECONDARY_REGION = "eu-central-1"
-#       STACK_NAME       = "secondary-resources-stack"
-#     }
-#   }
-# }
-
-# ########################################
-# # CloudWatch Event Rule to Trigger Lambda
-# ########################################
+# # CW TO detect failure
 # resource "aws_cloudwatch_event_rule" "failover_trigger" {
 #   name        = "failover-trigger"
-#   description = "Triggers Lambda on primary region failure detection"
-  
-#   # Example event pattern; adjust this pattern based on your actual needs.
-#   # This pattern listens for AWS Health events for EC2 or RDS services.
+#   description = "Triggers Lambda on failure detection"
+
 #   event_pattern = <<EOF
 # {
 #   "source": ["aws.health"],
 #   "detail-type": ["AWS Health Event"],
 #   "detail": {
-#     "service": ["EC2", "RDS"]
+#     "service": ["RDS", "EC2"]
 #   }
 # }
 # EOF
 # }
 
-# ########################################
-# # CloudWatch Event Target to Link the Rule with Lambda
-# ########################################
-# resource "aws_cloudwatch_event_target" "lambda_failover_target" {
-#   rule      = aws_cloudwatch_event_rule.failover_trigger.name
-#   target_id = "ProvisionSecondary"
-#   arn       = aws_lambda_function.provision_secondary.arn
+
+###############################
+## CW METRIC CHECK
+
+# resource "aws_cloudwatch_metric_alarm" "primary_health_alarm" {
+#   alarm_name          = "PrimaryRegionHealthCheckFailed"
+#   comparison_operator = "GreaterThanOrEqualToThreshold"
+#   evaluation_periods  = 2
+#   metric_name         = "HealthCheckStatus"
+#   namespace          = "AWS/Route53"
+#   period             = 60
+#   statistic          = "Minimum"
+#   threshold          = 1
+#   alarm_actions      = [var.sns_notify_arn]
 # }
 
-# ########################################
-# # Lambda Permission to Allow CloudWatch to Invoke the Lambda
-# ########################################
-# resource "aws_lambda_permission" "allow_cloudwatch" {
-#   statement_id  = "AllowExecutionFromCloudWatch"
-#   action        = "lambda:InvokeFunction"
-#   function_name = aws_lambda_function.provision_secondary.function_name
-#   principal     = "events.amazonaws.com"
-#   source_arn    = aws_cloudwatch_event_rule.failover_trigger.arn
-# }
+#######################
+## NEW CW METRIC CHECK
+resource "aws_cloudwatch_metric_alarm" "primary_region_failure" {
+  provider            = aws
+  alarm_name          = "PrimaryRegionFailureAlarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "HTTPCode_ELB_5XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "10"
+  alarm_description   = "Triggers when primary region ALB fails"
+  treat_missing_data  = "breaching"
+
+  dimensions = {
+    LoadBalancer = var.external_alb_dns  # Replace with your ALB DNS
+    # TargetGroup = var.  # Replace with your target group name
+  }
+
+  # alarm_actions = [aws_sns_topic.failover_topic.arn]
+  alarm_actions = [var.sns_notify_arn]  # SNS topic for notifications
+}
 
 
-# data "archive_file" "lambda_zip" {
-#   type        = "zip"
-#   source_file = "${path.root}/modules/iam/lambda_recovery.py"
-#   output_path = "${path.module}/route53/lambda.zip"
-# }
+########################################
+# IAM Role for Lambda Execution
+########################################
+resource "aws_iam_role" "lambda_exec_role" {
+  name = "lambda_exec_role"
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17",
+    Statement = [
+      {
+        Action    = "sts:AssumeRole",
+        Principal = { Service = "lambda.amazonaws.com" },
+        Effect    = "Allow"
+      }
+    ]
+  })
+}
+
+# Attach a policy that grants sufficient permissions (for demo purposes AdministratorAccess is used;
+# in production, please follow least privilege principles)
+resource "aws_iam_policy_attachment" "lambda_policy_attach" {
+  name       = "lambda_policy_attachment"
+  roles      = [aws_iam_role.lambda_exec_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+#################################
+## LAMBDA FUNCTION FOR FAILOVER
+resource "aws_lambda_function" "provision_secondary" {
+  provider      = aws.secondary
+  function_name = "ProvisionSecondaryRegion"
+  handler       = "lambda_function.lambda_handler"
+  runtime       = "python3.9"
+  role          = aws_iam_role.lambda_exec_role.arn
+  filename      = data.archive_file.lambda_zip.output_path
+
+  environment {
+    variables = {
+      REPO_URL = "https://github.com/MaxiFine/three-tier-project-aws.git"
+      REGION   = "eu-central-1"
+    }
+  }
+  # source_code_hash = filebase64sha256("lambda_function.zip")
+  source_code_hash = filebase64sha256(data.archive_file.lambda_zip.output_path)
+
+}
+
+
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "${path.root}/modules/iam/lambda_recovery.py"
+  output_path = "${path.module}/route53/lambda.zip"
+}

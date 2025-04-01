@@ -92,3 +92,10 @@ variable "external_alb_zone_id" {
 variable "sns_notify_arn" {
   description = "SNS topic for notify"
 }
+
+variable "zone_id" {
+  description = "Route53 Hosted Zone ID"
+  type        = string
+  default     = "Z04817493R2Y2FEP3UF7R" # Replace with your actual hosted zone ID
+  
+}
