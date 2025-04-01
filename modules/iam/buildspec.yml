@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - apt-get update -y
+      - apt-get install -y unzip git
+      - curl -LO https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
+      - unzip terraform_*.zip -d /usr/local/bin/
+      - terraform version
+
+  pre_build:
+    commands:
+      - git clone "$REPO_URL" /tmp/repo
+      - cd /tmp/repo
+      - terraform init -backend-config="region=$TF_REGION"
+
+  build:
+    commands:
+      - terraform validate
+      - terraform plan -var "region=$TF_REGION"
+      - terraform apply -auto-approve -var "region=$TF_REGION"

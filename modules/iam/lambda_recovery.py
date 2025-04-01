@@ -1,42 +1,47 @@
+# import boto3
+# import os
+# import subprocess
+
+# def lambda_handler(event, context):
+#     region = os.environ['REGION']
+#     repo_url = os.environ['REPO_URL']
+
+#     subprocess.run(["git", "clone", repo_url, "/tmp/repo"])
+#     cf_client = boto3.client('cloudformation', region_name=region)
+#     with open('/tmp/repo/stack-template.yaml', 'r') as f:
+#         template = f.read()
+
+#     cf_client.create_stack(
+#         StackName='SecondaryRegionStack',
+#         TemplateBody=template,
+#         Capabilities=['CAPABILITY_IAM']
+#     )
+#     return {"status": "Secondary region provisioning started"}
+
+
+
+############## 
+# USING CODE BUILDER
 import boto3
-import json
 import os
 
-# Initialize Route53 client
-route53 = boto3.client('route53')
-
-# Environment variables provided via Terraform
-HOSTED_ZONE_ID    = os.environ['HOSTED_ZONE_ID']
-RECORD_NAME       = os.environ['RECORD_NAME']
-SECONDARY_TARGET  = os.environ['SECONDARY_TARGET']
-SECONDARY_ZONE_ID = os.environ['SECONDARY_ZONE_ID']
-
 def lambda_handler(event, context):
-    print("Received event:", json.dumps(event))
+    codebuild = boto3.client('codebuild')
     
-    # Create the change batch to update the record
-    response = route53.change_resource_record_sets(
-        HostedZoneId=HOSTED_ZONE_ID,
-        ChangeBatch={
-            'Comment': 'Failover DNS update triggered by CloudWatch alarm',
-            'Changes': [
-                {
-                    'Action': 'UPSERT',
-                    'ResourceRecordSet': {
-                        'Name': RECORD_NAME,
-                        'Type': 'A',
-                        'AliasTarget': {
-                            'HostedZoneId': SECONDARY_ZONE_ID,
-                            'DNSName': SECONDARY_TARGET,
-                            'EvaluateTargetHealth': False
-                        }
-                    }
-                }
-            ]
-        }
+    response = codebuild.start_build(
+        projectName="TerraformDRProject",
+        environmentVariablesOverride=[
+            {
+                'name': 'TF_REGION',
+                'value': os.environ['REGION'],
+                'type': 'PLAINTEXT'
+            },
+            {
+                'name': 'TF_ACTION',
+                'value': 'apply',
+                'type': 'PLAINTEXT'
+            }
+        ]
     )
-    print("Change response:", response)
-    return {
-        'statusCode': 200,
-        'body': json.dumps('DNS failover update executed successfully')
-    }
+    return {"status": "Build started", "build_id": response['build']['id']}
+
