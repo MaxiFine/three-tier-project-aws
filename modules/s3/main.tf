@@ -141,6 +141,7 @@ resource "aws_kms_key" "replica" {
         Sid    = "EnableReplicationRole",
         Effect = "Allow",
         Principal = {
+          # AWS = aws_iam_role.replication.arn
           AWS = aws_iam_role.replication.arn
         },
         Action = [
