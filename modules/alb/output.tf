@@ -16,13 +16,9 @@ output "internal_alb_dns" {
   value = aws_lb.app_internal_lb.dns_name
 }
 
-
-
-
 output "app_alr_arn_2" {
   value = aws_lb_target_group.app_internal_tgroup.arn
 }
-
 
 output "internal_alb_id" {
   value = aws_lb.app_internal_lb.id
@@ -30,7 +26,6 @@ output "internal_alb_id" {
 output "internal_alb_arn" {
   value = aws_lb.app_internal_lb.arn
 }
-
 
 
 # In modules/alb/outputs.tf

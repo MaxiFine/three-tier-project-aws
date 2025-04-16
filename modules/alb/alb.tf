@@ -1,12 +1,12 @@
-# provider "aws" {
-#   region = "eu-west-1"  # Primary region
-# }
-
-
 provider "aws" {
-  alias  = "secondary"
-  region = "eu-central-1"  # Secondary region
+  region = "eu-west-1"  # Primary region
 }
+
+
+# provider "aws" {
+#   alias  = "secondary"
+#   region = "eu-central-1"  # Secondary region
+# }
 
 # ###############
 # ## FAILOVER FOR alb.tf
@@ -169,7 +169,6 @@ resource "aws_lb_target_group" "app_internal_tgroup" {
 
 ###################
 ## ALB LISTENER
-
 resource "aws_lb_listener" "app_alb_listener" {
   load_balancer_arn = aws_lb.app_internal_lb.arn
   port              = "80"

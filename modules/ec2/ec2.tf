@@ -1,10 +1,5 @@
 # ####################
 # ### EC2 WEB TIER instances
-
-# data "index_file" "user_data" {
-#   template = file("${path.module}/user_data.sh")
-# }
-
 resource "aws_instance" "PublicWebTemplat-1" {
   ami           = "ami-03fd334507439f4d1" # Replace with your AMI ID
   instance_type = "t2.micro"

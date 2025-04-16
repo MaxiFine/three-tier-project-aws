@@ -1,7 +1,3 @@
-# variable "vpc_id" {
-#   description = "The ID of the VPC"
-#   type        = string
-# }
 
 variable "public_web_subnet_1" {
   description = "The ID of the first public web subnet"
