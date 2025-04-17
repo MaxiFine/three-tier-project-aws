@@ -14,7 +14,7 @@ resource "aws_route53_health_check" "primary_health_check_http" {
   fqdn              = "mxdr.free-sns.live"  # Replace with your primary endpoint
   port              = 80
   type              = "HTTP"
-  resource_path     = "/"  # Your health check endpoint
+  resource_path     = "/"  
   failure_threshold = 3
   request_interval  = 30
 
@@ -80,39 +80,6 @@ resource "aws_route53_record" "secondary_failover" {
   # No direct health check needed; Route 53 auto-fails over if PRIMARY is unhealthy.
 }
 
-
-####################
-# # CW TO detect failure
-# resource "aws_cloudwatch_event_rule" "failover_trigger" {
-#   name        = "failover-trigger"
-#   description = "Triggers Lambda on failure detection"
-
-#   event_pattern = <<EOF
-# {
-#   "source": ["aws.health"],
-#   "detail-type": ["AWS Health Event"],
-#   "detail": {
-#     "service": ["RDS", "EC2"]
-#   }
-# }
-# EOF
-# }
-
-
-###############################
-## CW METRIC CHECK
-
-# resource "aws_cloudwatch_metric_alarm" "primary_health_alarm" {
-#   alarm_name          = "PrimaryRegionHealthCheckFailed"
-#   comparison_operator = "GreaterThanOrEqualToThreshold"
-#   evaluation_periods  = 2
-#   metric_name         = "HealthCheckStatus"
-#   namespace          = "AWS/Route53"
-#   period             = 60
-#   statistic          = "Minimum"
-#   threshold          = 1
-#   alarm_actions      = [var.sns_notify_arn]
-# }
 
 #######################
 ## NEW CW METRIC CHECK
