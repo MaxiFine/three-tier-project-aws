@@ -12,8 +12,6 @@ resource "aws_vpc" "vpc_01" {
 
 ###########
 # IGW #####
-##########
-
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc_01.id
 
@@ -99,12 +97,8 @@ resource "aws_subnet" "private-db-subnet-2" {
   }
 }
 
-#####################################
-### 4 ROUTE TABLES
 #####################
 #### ROUTE TABLE ####
-#####################
-
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.vpc_01.id
 
@@ -184,8 +178,6 @@ resource "aws_route_table_association" "nat_route_db_2" {
 
 #################################
 ## NAT GATEWAY CONFIGS
-##################
-## NAT GATEWAY
 resource "aws_eip" "eip_nat" {
   # vpc = true
   domain = "vpc"
